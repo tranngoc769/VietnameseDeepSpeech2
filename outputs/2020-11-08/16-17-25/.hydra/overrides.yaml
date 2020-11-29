@@ -1,0 +1,2 @@
+- model.model_path=/work/Source/deepspeech.pytorch/models/deepspeech_final.pth
+- audio_path=/dataset/wav/FPTOpenSpeechData_Set001_V0.1_000202.wav

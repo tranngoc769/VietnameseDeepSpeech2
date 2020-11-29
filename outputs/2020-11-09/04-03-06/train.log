@@ -1,0 +1,108 @@
+[2020-11-09 07:23:13,200][root][INFO] - Training Summary Epoch: [1]	Time taken (s): 12003	Average Loss 0.720
+
+[2020-11-09 11:07:36,236][root][INFO] - Training Summary Epoch: [2]	Time taken (s): 11914	Average Loss 0.419
+
+[2020-11-09 14:39:07,066][root][INFO] - Training Summary Epoch: [3]	Time taken (s): 11837	Average Loss 0.365
+
+[2020-11-09 18:10:47,341][root][INFO] - Training Summary Epoch: [4]	Time taken (s): 11875	Average Loss 0.326
+
+[2020-11-09 21:40:53,755][root][INFO] - Training Summary Epoch: [5]	Time taken (s): 11784	Average Loss 0.297
+
+[2020-11-10 01:11:11,809][root][INFO] - Training Summary Epoch: [6]	Time taken (s): 11797	Average Loss 0.269
+
+[2020-11-10 04:42:19,153][root][INFO] - Training Summary Epoch: [7]	Time taken (s): 11841	Average Loss 0.245
+
+[2020-11-10 08:25:57,565][root][INFO] - Training Summary Epoch: [8]	Time taken (s): 12598	Average Loss 0.222
+
+[2020-11-10 21:17:26,861][root][INFO] - Training Summary Epoch: [9]	Time taken (s): 45114	Average Loss 0.201
+
+[2020-11-11 11:13:29,691][root][INFO] - Training Summary Epoch: [10]	Time taken (s): 44691	Average Loss 0.183
+
+[2020-11-11 17:38:50,585][root][INFO] - Training Summary Epoch: [11]	Time taken (s): 19018	Average Loss 0.166
+
+[2020-11-11 21:12:26,080][root][INFO] - Training Summary Epoch: [12]	Time taken (s): 11967	Average Loss 0.149
+
+[2020-11-12 00:45:07,359][root][INFO] - Training Summary Epoch: [13]	Time taken (s): 11902	Average Loss 0.134
+
+[2020-11-12 04:16:08,845][root][INFO] - Training Summary Epoch: [14]	Time taken (s): 11844	Average Loss 0.120
+
+[2020-11-12 07:47:10,820][root][INFO] - Training Summary Epoch: [15]	Time taken (s): 11826	Average Loss 0.105
+
+[2020-11-12 11:17:46,322][root][INFO] - Training Summary Epoch: [16]	Time taken (s): 11809	Average Loss 0.092
+
+[2020-11-12 14:47:24,766][root][INFO] - Training Summary Epoch: [17]	Time taken (s): 11760	Average Loss 0.080
+
+[2020-11-12 18:17:17,368][root][INFO] - Training Summary Epoch: [18]	Time taken (s): 11773	Average Loss 0.069
+
+[2020-11-12 21:46:48,050][root][INFO] - Training Summary Epoch: [19]	Time taken (s): 11753	Average Loss 0.058
+
+[2020-11-13 01:16:27,331][root][INFO] - Training Summary Epoch: [20]	Time taken (s): 11761	Average Loss 0.049
+
+[2020-11-13 04:47:10,192][root][INFO] - Training Summary Epoch: [21]	Time taken (s): 11807	Average Loss 0.041
+
+[2020-11-13 08:17:39,100][root][INFO] - Training Summary Epoch: [22]	Time taken (s): 11806	Average Loss 0.034
+
+[2020-11-13 11:47:35,645][root][INFO] - Training Summary Epoch: [23]	Time taken (s): 11777	Average Loss 0.029
+
+[2020-11-13 15:17:04,258][root][INFO] - Training Summary Epoch: [24]	Time taken (s): 11753	Average Loss 0.024
+
+[2020-11-13 18:46:28,837][root][INFO] - Training Summary Epoch: [25]	Time taken (s): 11746	Average Loss 0.020
+
+[2020-11-13 22:16:10,652][root][INFO] - Training Summary Epoch: [26]	Time taken (s): 11764	Average Loss 0.017
+
+[2020-11-14 01:45:51,129][root][INFO] - Training Summary Epoch: [27]	Time taken (s): 11763	Average Loss 0.015
+
+[2020-11-14 05:15:27,395][root][INFO] - Training Summary Epoch: [28]	Time taken (s): 11757	Average Loss 0.013
+
+[2020-11-14 08:45:32,366][root][INFO] - Training Summary Epoch: [29]	Time taken (s): 11787	Average Loss 0.011
+
+[2020-11-14 12:14:21,233][root][INFO] - Training Summary Epoch: [30]	Time taken (s): 11715	Average Loss 0.009
+
+[2020-11-14 15:43:08,474][root][INFO] - Training Summary Epoch: [31]	Time taken (s): 11716	Average Loss 0.008
+
+[2020-11-14 19:25:17,405][root][INFO] - Training Summary Epoch: [32]	Time taken (s): 12512	Average Loss 0.007
+
+[2020-11-14 22:55:05,709][root][INFO] - Training Summary Epoch: [33]	Time taken (s): 11764	Average Loss 0.007
+
+[2020-11-15 02:24:07,345][root][INFO] - Training Summary Epoch: [34]	Time taken (s): 11726	Average Loss 0.006
+
+[2020-11-15 05:55:25,106][root][INFO] - Training Summary Epoch: [35]	Time taken (s): 11861	Average Loss 0.005
+
+[2020-11-15 09:24:40,833][root][INFO] - Training Summary Epoch: [36]	Time taken (s): 11738	Average Loss 0.005
+
+[2020-11-15 12:59:41,644][root][INFO] - Training Summary Epoch: [37]	Time taken (s): 12081	Average Loss 0.005
+
+[2020-11-15 16:31:06,088][root][INFO] - Training Summary Epoch: [38]	Time taken (s): 11868	Average Loss 0.004
+
+[2020-11-15 21:41:56,993][root][INFO] - Training Summary Epoch: [39]	Time taken (s): 17831	Average Loss 0.004
+
+[2020-11-16 02:05:45,211][root][INFO] - Training Summary Epoch: [40]	Time taken (s): 13947	Average Loss 0.004
+
+[2020-11-16 06:11:04,810][root][INFO] - Training Summary Epoch: [41]	Time taken (s): 13892	Average Loss 0.004
+
+[2020-11-16 11:36:46,158][root][INFO] - Training Summary Epoch: [42]	Time taken (s): 18533	Average Loss 0.004
+
+[2020-11-16 15:09:45,831][root][INFO] - Training Summary Epoch: [43]	Time taken (s): 11932	Average Loss 0.004
+
+[2020-11-16 18:41:58,410][root][INFO] - Training Summary Epoch: [44]	Time taken (s): 11895	Average Loss 0.003
+
+[2020-11-16 22:13:08,570][root][INFO] - Training Summary Epoch: [45]	Time taken (s): 11855	Average Loss 0.003
+
+[2020-11-17 01:43:52,813][root][INFO] - Training Summary Epoch: [46]	Time taken (s): 11808	Average Loss 0.003
+
+[2020-11-17 05:14:09,559][root][INFO] - Training Summary Epoch: [47]	Time taken (s): 11785	Average Loss 0.003
+
+[2020-11-17 08:44:17,432][root][INFO] - Training Summary Epoch: [48]	Time taken (s): 11792	Average Loss 0.003
+
+[2020-11-17 12:18:55,213][root][INFO] - Training Summary Epoch: [49]	Time taken (s): 12060	Average Loss 0.003
+
+[2020-11-17 15:55:46,937][root][INFO] - Training Summary Epoch: [50]	Time taken (s): 12193	Average Loss 0.003
+
+[2020-11-17 19:27:14,746][root][INFO] - Training Summary Epoch: [51]	Time taken (s): 11857	Average Loss 0.003
+
+[2020-11-17 22:56:44,578][root][INFO] - Training Summary Epoch: [52]	Time taken (s): 11753	Average Loss 0.003
+
+[2020-11-18 02:26:26,127][root][INFO] - Training Summary Epoch: [53]	Time taken (s): 11765	Average Loss 0.003
+
+[2020-11-18 06:01:39,277][root][INFO] - Training Summary Epoch: [54]	Time taken (s): 12095	Average Loss 0.003
+

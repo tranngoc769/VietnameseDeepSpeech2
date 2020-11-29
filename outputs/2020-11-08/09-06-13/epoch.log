@@ -1,0 +1,3 @@
+Training Summary Epoch: [1]	Time taken (s): 5	Average Loss 37.826
+Validation Summary Epoch: [1]	Average WER 100.000	Average CER 94.721	Training Summary Epoch: [2]	Time taken (s): 4	Average Loss 21.134
+Validation Summary Epoch: [2]	Average WER 100.000	Average CER 92.448	

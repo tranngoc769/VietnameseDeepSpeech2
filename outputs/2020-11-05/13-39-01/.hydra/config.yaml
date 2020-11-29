@@ -1,0 +1,16 @@
+lm:
+  decoder_type: greedy
+  lm_path: ''
+  top_paths: 1
+  alpha: 0.0
+  beta: 0.0
+  cutoff_top_n: 40
+  cutoff_prob: 1.0
+  beam_width: 10
+  lm_workers: 4
+model:
+  use_half: true
+  cuda: true
+  model_path: /work/Source/deepspeech.pytorch/models/deepspeech_final.pth
+audio_path: /home/2019/2020/data/clips/VIVOSSPK01_R044.wav
+offsets: false

@@ -1,0 +1,58 @@
+optim:
+  learning_rate: 0.0003
+  learning_anneal: 1.1
+  weight_decay: 1.0e-05
+  max_norm: 400.0
+  momentum: 0.9
+model:
+  rnn_type: lstm
+  hidden_size: 1024
+  hidden_layers: 5
+checkpointing:
+  continue_from: ''
+  checkpoint: true
+  checkpoint_per_iteration: 0
+  save_n_recent_models: 10
+  best_val_model_name: deepspeech_final.pth
+  load_auto_checkpoint: false
+  save_folder: models/
+training:
+  no_cuda: false
+  finetune: false
+  seed: 123456
+  dist_backend: nccl
+  epochs: 2
+data:
+  train_manifest: /datasetIR/40train.csv
+  val_manifest: /dataset/vi_test.csv
+  batch_size: 32
+  num_workers: 0
+  labels_path: labels.json
+  spect:
+    sample_rate: 16000
+    window_size: 0.02
+    window_stride: 0.01
+    window: hamming
+  augmentation:
+    speed_volume_perturb: false
+    spec_augment: false
+    noise_dir: ''
+    noise_prob: 0.4
+    noise_min: 0.0
+    noise_max: 0.5
+augmentation:
+  speed_volume_perturb: false
+  spec_augment: false
+  noise_dir: ''
+  noise_prob: 0.4
+  noise_min: 0.0
+  noise_max: 0.5
+apex:
+  opt_level: O1
+  loss_scale: 1
+visualization:
+  id: DeepSpeech training
+  visdom: false
+  tensorboard: false
+  log_dir: visualize/deepspeech_final
+  log_params: false

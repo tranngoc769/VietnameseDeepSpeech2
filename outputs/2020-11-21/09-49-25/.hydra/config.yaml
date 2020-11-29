@@ -1,0 +1,16 @@
+lm:
+  decoder_type: greedy
+  lm_path: /work/DeepSpeech091/DeepSpeech/data/lm/vn/lm.binary
+  top_paths: 1
+  alpha: 0.931289039105002
+  beta: 1.1834137581510284
+  cutoff_top_n: 300
+  cutoff_prob: 1.0
+  beam_width: 1024
+  lm_workers: 4
+model:
+  use_half: true
+  cuda: true
+  model_path: /work/Source/deepspeech.pytorch/models/deepspeech_final.pth
+audio_path: /datasetIR/wav/IR_000388.wav
+offsets: false

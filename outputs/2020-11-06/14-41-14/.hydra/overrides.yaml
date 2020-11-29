@@ -1,0 +1,2 @@
+- model.model_path=/work/export/model_vi_ok_6_11.pth
+- audio_path=/dataset/wav/VIVOSSPK15_094.wav

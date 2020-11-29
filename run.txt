@@ -1,0 +1,3 @@
+source "/home/DeepSpeech2Pytorch/ds2pytorch-venv/bin/activate"
+cd /home/DeepSpeech2Pytorch/ds2pytorch-venv/deepspeech.pytorch/
+python "/home/DeepSpeech2Pytorch/ds2pytorch-venv/deepspeech.pytorch/train.py" data.train_manifest="/home/DeepSpeech2Pytorch/ds2pytorch-venv/deepspeech.pytorch/libri_test_clean_manifest.csv" data.val_manifest="/home/DeepSpeech2Pytorch/ds2pytorch-venv/deepspeech.pytorch/libri_val_manifest.csv" data.batch_size=32  training.epochs=2 checkpointing.checkpoint=true checkpointing.load_auto_checkpoint=true data.num_workers=0

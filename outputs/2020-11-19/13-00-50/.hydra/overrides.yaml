@@ -1,0 +1,2 @@
+- model.model_path=/work/Source/deepspeech.pytorch/models/deepspeech_checkpoint_epoch_70.pth
+- audio_path=/dataset_stock/QQ/truyen/3366.wav

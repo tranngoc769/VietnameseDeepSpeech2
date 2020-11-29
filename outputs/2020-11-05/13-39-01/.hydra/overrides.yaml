@@ -1,0 +1,2 @@
+- model.model_path=/work/Source/deepspeech.pytorch/models/deepspeech_final.pth
+- audio_path=/home/2019/2020/data/clips/VIVOSSPK01_R044.wav

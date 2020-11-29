@@ -1,0 +1,2 @@
+- model.model_path=/work/export/model_vi_ok.pth
+- audio_path=/datasetIR/wav/IR_000000.wav

@@ -1,0 +1,4 @@
+[2020-11-08 09:32:09,389][root][INFO] - Training Summary Epoch: [1]	Time taken (s): 6	Average Loss 37.826	
+[2020-11-08 09:32:10,785][root][INFO] - Validation Summary Epoch: [1]	Average WER 100.000	Average CER 94.359	
+[2020-11-08 09:32:18,196][root][INFO] - Training Summary Epoch: [2]	Time taken (s): 4	Average Loss 21.135	
+[2020-11-08 09:32:20,010][root][INFO] - Validation Summary Epoch: [2]	Average WER 100.000	Average CER 90.549	

@@ -1,0 +1,8 @@
+[2020-11-09 03:58:39,286][root][INFO] - Training Summary Epoch: [1]	Time taken (s): 4	Average Loss 28.544
+
+[2020-11-09 03:58:52,347][root][INFO] - Training Summary Epoch: [2]	Time taken (s): 4	Average Loss 15.042
+
+[2020-11-09 03:59:03,879][root][INFO] - Training Summary Epoch: [3]	Time taken (s): 4	Average Loss 13.640
+
+[2020-11-09 03:59:14,544][root][INFO] - Training Summary Epoch: [4]	Time taken (s): 4	Average Loss 11.710
+

@@ -1,0 +1,8 @@
+- data.train_manifest=/dataset/vi_train.csv
+- data.val_manifest=/dataset/vi_test.csv
+- data.batch_size=32
+- training.epochs=70
+- checkpointing.checkpoint=true
+- checkpointing.save_n_recent_models=3
+- checkpointing.load_auto_checkpoint=true
+- data.num_workers=0
