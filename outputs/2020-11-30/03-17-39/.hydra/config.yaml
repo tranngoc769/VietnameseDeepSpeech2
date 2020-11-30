@@ -1,0 +1,19 @@
+lm:
+  decoder_type: beam
+  lm_path: /work/languagemodel/lm_crawl.binary
+  top_paths: 1
+  alpha: 2.0
+  beta: 1.0
+  cutoff_top_n: 300
+  cutoff_prob: 1.0
+  beam_width: 512
+  lm_workers: 4
+model:
+  use_half: true
+  cuda: true
+  model_path: /work/export/model_vi_ok.pth
+test_manifest: /dataset/vi_test.csv
+verbose: true
+save_output: /dataset/lm_outtest/outtest
+batch_size: 32
+num_workers: 0
