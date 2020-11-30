@@ -58,6 +58,8 @@ def transcribe(cfg: TranscribeConfig):
     spect_parser = SpectrogramParser(audio_conf=model.audio_conf,
                                      normalize=True)
 
+    #Đối với beamsearch decoded_putput cho ra mảng (1xbeam_width) với các phần tử là các câu có thể xảy ra:
+    #VD: [["toi đi hộc", "tôi di hoc", "tôi đi ho",...]] 512 phần tử (beam_width=512)
     decoded_output, decoded_offsets = run_transcribe(audio_path=cfg.audio_path,
                                                      spect_parser=spect_parser,
                                                      model=model,

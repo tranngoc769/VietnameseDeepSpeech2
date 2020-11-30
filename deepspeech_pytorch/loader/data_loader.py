@@ -116,10 +116,11 @@ class SpectrogramParser(AudioParser):
                 y = self.noise_injector.inject_noise(y)
 
         
-        
-        nanlist=audio_path.split("/")
-        nanLs = nanlist[3]
-        name = nanLs.split(".")[0]+"_"+nanLs.split(".")[1]
+        ##get ten file de ve hinh
+        # nanlist=audio_path.split("/")
+        # nanLs = nanlist[len(nanlist)-1]
+        # name = nanLs.split(".")[0]+"_"+nanLs.split(".")[1]
+
         #tín hiệu thô
         # fig1,ax22= plt.subplots()
         # plt.title('Tín hiệu thô của câu nói \'anh có thể gọi cho tôi không\'')
