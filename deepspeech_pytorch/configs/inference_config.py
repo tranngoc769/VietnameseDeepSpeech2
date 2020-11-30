@@ -7,15 +7,15 @@ from deepspeech_pytorch.enums import DecoderType
 class LMConfig:
     #decoder_type: DecoderType = DecoderType.greedy
     decoder_type: DecoderType = DecoderType.beam#quyennn
-    lm_path: str = "/work/languagemodel/vn091/lm.binary"  # Path to an (optional) kenlm language model for use with beam search (req\'d with trie)
+    lm_path: str = "/work/languagemodel/lm_crawl.binary"  # Path to an (optional) kenlm language model for use with beam search (req\'d with trie)
     top_paths: int = 1  # Number of beams to return
-    alpha: float = 0.931289039105002  # Language model weight, hihi quyen từ 0.0 ->
-    beta: float = 1.1834137581510284  # Language model word bonus (all words)
+    alpha: float = 2.0  # Language model weight, hihi quyen từ 0.0 ->
+    beta: float =  -0.2  # Language model word bonus (all words)
     # alpha: float = 0  # Language model weight, hihi quyen từ 0.0 ->
     # beta: float = 0  # Language model word bonus (all words)
     cutoff_top_n: int = 300  # Cutoff_top_n characters with highest probs in vocabulary will be used in beam search  40->300
     cutoff_prob: float = 1.0  # Cutoff probability in pruning,default 1.0, no pruning.
-    beam_width: int = 1024  # Beam width to use  quyen 10->
+    beam_width: int = 2048  # Beam width to use  quyen 10->
     lm_workers: int = 4  # Number of LM processes to use
 
 
