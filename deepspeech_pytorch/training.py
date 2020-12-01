@@ -160,7 +160,7 @@ def train(cfg):
 
     model = model.to(device)
     parameters = model.parameters()
-    if OmegaConf.get_type(cfg.optim) is SGDConfig:
+    if OmegaConf.get_type(cfg.optim) is SGDConfig:#mặc định ở dòng 8 trong train_config
         optimizer = torch.optim.SGD(parameters,
                                     lr=cfg.optim.learning_rate,
                                     momentum=cfg.optim.momentum,
@@ -208,26 +208,27 @@ def train(cfg):
         train_sampler.reset_training_step(training_step=state.training_step)
         for i, (data) in enumerate(train_loader, start=state.training_step):
             state.set_training_step(training_step=i)
-            inputs, targets, input_percentages, target_sizes = data
+            inputs, targets, input_percentages, target_sizes = data#inputs[x][0] chứ spect thứ x trong batchsixe, input_percenttages: số cột của spect hiện tại/số cột max, target: array [[...mã ascii]]
             input_sizes = input_percentages.mul_(int(inputs.size(3))).int()
             # measure data loading time
             data_time.update(time.time() - end)
             inputs = inputs.to(device)
 
-            out, output_sizes = model(inputs, input_sizes)
-            out = out.transpose(0, 1)  # TxNxH
+            out, output_sizes = model(inputs, input_sizes)#như out: 3 chiều, outputsize: 1 chiều : chứa out của 32 âm  thanh (out: vd  là 1 tensor 3 chiều (3x190x93))
+            out = out.transpose(0, 1)  # TxNxH sau khi tranpose : out 3 chiều (bị đổi chiều 0 và 1)=> out (190x3x93)
 
             float_out = out.float()  # ensure float32 for loss
             loss = criterion(float_out, targets, output_sizes, target_sizes).to(device)
-            loss = loss / inputs.size(0)  # average the loss by minibatch
+            loss = loss / inputs.size(0)  # average the loss by minibatch, tổng loss chia cho số spect trong batch đó 
             loss_value = loss.item()
+
 
             # Check to ensure valid loss was calculated
             valid_loss, error = check_loss(loss, loss_value)
             if valid_loss:
                 optimizer.zero_grad()
 
-                # compute gradient
+                # compute gradient, SGD chuẩn hóa SGD cập nhật trọng số
                 with amp.scale_loss(loss, optimizer) as scaled_loss:
                     scaled_loss.backward()
                 torch.nn.utils.clip_grad_norm_(amp.master_params(optimizer), cfg.optim.max_norm)

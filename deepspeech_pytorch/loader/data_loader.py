@@ -254,26 +254,28 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
 def _collate_fn(batch):
     def func(p):
         return p[0].size(1)
-
-    batch = sorted(batch, key=lambda sample: sample[0].size(1), reverse=True)# sắp xếp batch theo sample[0].size(1), kích thước của cột của ma trận 2  chiều
-    longest_sample = max(batch, key=func)[0]
-    freq_size = longest_sample.size(0)
+#sample là 1 shape (spect, ...) => sample[0] là spect phổ của câu nói, sample[1] là array các ascii của câu nói gốc
+#spect này là ma trận 2 chiều các số thực (161, ...)=> sample[0].size(0)-> lấy số hàng (do kiểu tensor nên khác)
+#batch được sắp xếp theo giảm dần
+    batch = sorted(batch, key=lambda sample: sample[0].size(1), reverse=True)# sắp xếp batch theo sample[0].size(1), số phần tử của cột của ma trận 2  chiều spect
+    longest_sample = max(batch, key=func)[0]#lấy âm thanh mà có spect có ma trận nhìu cột nhất
+    freq_size = longest_sample.size(0)#lấy số dòng của file âm thanh có nhìu cột nhất ->161
     minibatch_size = len(batch)
-    max_seqlength = longest_sample.size(1)
-    inputs = torch.zeros(minibatch_size, 1, freq_size, max_seqlength)#ma trận 4 chiều
-    input_percentages = torch.FloatTensor(minibatch_size)
-    target_sizes = torch.IntTensor(minibatch_size)# là mảng kích thước transcript của 32  câu gốc [141, 147, ..] , ban đầu random
-    targets = []#mảng 1 chiều các kí tự của cả 32 transcript liên tục . len(targets) là tất cả các kí tự có trong toàn bộ 32 transcript
+    max_seqlength = longest_sample.size(1)#lấy số cột của file âm thanh có nhìu cột nhất ->380
+    inputs = torch.zeros(minibatch_size, 1, freq_size, max_seqlength)#ma trận 4 chiều, input[x][0] là spect thứ x trong batchsize
+    input_percentages = torch.FloatTensor(minibatch_size)#ma trận phần trăm cho từng mẫu âm thanh trong minibatch
+    target_sizes = torch.IntTensor(minibatch_size)# là mảng kích thước transcript của 32  câu gốc [141, 55, ..] ,=>mẫu 1 có 141 kí tự, mẫu 2 có 55 kí tự ban đầu random
+    targets = []#mảng 1 chiều các kí tự của cả 32 transcript liên tục . len(targets) là tất cả các kí tự có trong toàn bộ 32 transcript, độ dài 1898778 kí tự
     for x in range(minibatch_size):
         sample = batch[x]
         tensor = sample[0]#tensor([[0.4504, -0.987..]] là cột [0] trong sample
         target = sample[1]#ascii [9,45,93,32,..]
-        seq_length = tensor.size(1)#tensor là 1 mảng 2 chiều có (161, 1108)
+        seq_length = tensor.size(1)#tensor là 1 mảng 2 chiều có (161, 1108), lấy số cột của spect
         #print("###", tensor.size())
         inputs[x][0].narrow(1, 0, seq_length).copy_(tensor)# thu hẹp ma trận theo chiều 1 (4 chiều 0 1 2 3), bắt đầu ở 0 và giữ lại seq_length cột
-        input_percentages[x] = seq_length / float(max_seqlength)
+        input_percentages[x] = seq_length / float(max_seqlength)# lấy số cột của spect hiện tại / số cột max-> phần trăm
         #print("$$$$$$$$$$$$",input_percentages[x])
-        target_sizes[x] = len(target)
+        target_sizes[x] = len(target)#số kí tự trong câu nói "cách để đi"->10
         targets.extend(target)# add 2 kiểu dữ liệu khác nhau vào list, vd 'aaa' và 1,  2
     targets = torch.IntTensor(targets)
     #inputs là mảng 4 chiều từng sample của 32 sample. 1 sample có tensor và ascii

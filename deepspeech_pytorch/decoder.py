@@ -143,7 +143,7 @@ class BeamCTCDecoder(Decoder):
             string: sequences of the model's best guess for the transcription
         """
         probs = probs.cpu()
-        out, scores, offsets, seq_lens = self._decoder.decode(probs, sizes)
+        out, scores, offsets, seq_lens = self._decoder.decode(probs, sizes)#out là ascii của câu nói sau khi model dự đoán và chạy qua beamsearch
 
         strings = self.convert_to_strings(out, seq_lens)
         offsets = self.convert_tensor(offsets, seq_lens)
@@ -163,7 +163,7 @@ class GreedyDecoder(Decoder):
         strings = []
         offsets = [] if return_offsets else None
         for x in xrange(len(sequences)):
-            seq_len = sizes[x] if sizes is not None else len(sequences[x])
+            seq_len = sizes[x] if sizes is not None else len(sequences[x])#len sequences[x]
             string, string_offsets = self.process_string(sequences[x], seq_len, remove_repetitions)
             strings.append([string])  # We only return one path
             if return_offsets:
@@ -205,9 +205,36 @@ class GreedyDecoder(Decoder):
             strings: sequences of the model's best guess for the transcription on inputs
             offsets: time step per character predicted
         """
-        _, max_probs = torch.max(probs, 2)
+        #max_probs là ma trận 2 chiều có 32 dòng, mỗi dòng 406 .. (bước time của câu nói). ví dụ max_probs[0] sẽ là 406 kí tự, mỗi time (1->406) trong câu nói cho ra 1 kí tự 
+        # nếu vào khoảng thời gian thứ i mà spect ko có nghĩa thì kí tự đó là 0, => đưa qua convert to string sd ctc decode sẽ được chuẩn hóa kí tự 0 0 0 giống nhau thành câu hoàn chỉnh 
+        _, max_probs = torch.max(probs, 2)#max_probs là ascii hoàn chỉnh sau khi model train ra và đưa qua greedy, max_probs lấy chỉ số của kí tự có xác suất cao nhất -> (tóm lại là trong các ascii thì ascii nào có xác suất cao nhất thì lấy và gán vào max_probs)
         strings, offsets = self.convert_to_strings(max_probs.view(max_probs.size(0), max_probs.size(1)),
                                                    sizes,
                                                    remove_repetitions=True,
                                                    return_offsets=True)
         return strings, offsets
+
+#max_probs[0] câu nói ''những ngay trong tài dan tuyển thấy cãy đãng làm sao''
+# tensor([ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+#          0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+#          0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+#          0,  0,  0,  0,  2,  2, 58, 58, 61,  2, 37, 37, 96, 96, 96,  2,  2, 37,
+#         37,  0,  0,  0,  0, 42, 21, 96, 96, 96, 96, 96, 96, 96, 87, 20, 20,  0,
+#          0,  0,  0, 66,  2, 37, 96, 96, 96, 96, 96, 96, 96, 87,  0,  0,  0,  0,
+#          0,  0,  0, 19, 49, 96, 96, 96, 96, 62,  0,  0,  0,  0,  0,  0,  0,  0,
+#          0, 42,  2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+#          0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 96,
+#         96, 96,  0,  0,  0,  0, 87, 38, 38, 21,  0,  0, 47,  2, 96, 96, 96, 96,
+#         96, 96, 87, 58, 58,  0,  0,  0, 48, 21, 96, 96, 96, 96, 96, 59,  0,  0,
+#          0,  0,  0,  0, 64, 21, 96, 96, 96, 10,  0,  0,  0,  0,  0, 64,  2, 37,
+#         96, 96, 96, 16,  0,  0,  0, 19, 13, 96, 96, 96, 96, 96, 96, 96, 23,  0,
+#          0,  0,  0,  0,  0,  0,  0,  0, 42, 66,  0,  0,  0,  0,  0,  0,  0,  0,
+#          0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+#          0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+#          0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+#          0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+#          0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+#          0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+#          0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+#          0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+#          0,  0,  0,  0,  0,  0,  0,  0,  0,  0], device='cuda:0')

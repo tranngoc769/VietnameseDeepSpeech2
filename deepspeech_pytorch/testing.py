@@ -60,10 +60,10 @@ def run_evaluation(test_loader,
     output_data = []
     for i, (data) in tqdm(enumerate(test_loader), total=len(test_loader)):
         inputs, targets, input_percentages, target_sizes = data
-        input_sizes = input_percentages.mul_(int(inputs.size(3))).int()
+        input_sizes = input_percentages.mul_(int(inputs.size(3))).int()#độ dài 1 dòng trong spect của mẫu, input_sizes là 32 mẫu
         inputs = inputs.to(device)
         if use_half:
-            inputs = inputs.half()
+            inputs = inputs.half()#không thay đổi nhiều
         # unflatten targets
         split_targets = []
         offset = 0

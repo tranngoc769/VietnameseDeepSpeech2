@@ -13,7 +13,7 @@ class LMConfig:
     # beta: float = 0  # Language model word bonus (all words)
     cutoff_top_n: int = 300  # Cutoff_top_n characters with highest probs in vocabulary will be used in beam search  40->300
     cutoff_prob: float = 1.0  # Cutoff probability in pruning,default 1.0, no pruning.
-    beam_width: int = 1024  # Beam width to use  quyen 10->
+    beam_width: int = 2048  # Beam width to use  quyen 10->
     lm_workers: int = 4  # Number of LM processes to use
 
 
@@ -32,7 +32,7 @@ class InferenceConfig:
 
 @dataclass
 class TranscribeConfig(InferenceConfig):
-    audio_path: str = "/dataset_stock/QQ/truyen/37.wav"  # Audio file to predict on
+    audio_path: str = "/dataset25h/wav/08001.wav"  # Audio file to predict on
     offsets: bool = False  # Returns time offset information,  bảng ascii
 
 
