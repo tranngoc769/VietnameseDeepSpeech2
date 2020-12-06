@@ -14,6 +14,9 @@ deepspeech_pytorch/__pycache__/training.cpython-36.pyc
 deepspeech_pytorch/__pycache__/utils.cpython-36.pyc
 kubernetes/README.md
 outputs
+models/**
+models
+deepspeech_pytorch/quyenImg/
 kubernetes/train.yaml
 kubernetes/data/persistent_volume.yaml
 kubernetes/data/storage.yaml
