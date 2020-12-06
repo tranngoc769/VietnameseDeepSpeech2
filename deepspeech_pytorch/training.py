@@ -268,7 +268,7 @@ def train(cfg):
               'Average Loss {loss:.3f}\n'.format(epoch + 1, epoch_time=epoch_time, loss=state.avg_loss))
         file_object.close()
         with torch.no_grad():
-            wer, cer, output_data = run_evaluation(test_loader=test_loader,
+            wer, cer, output_data, wer2, cer2 = run_evaluation(test_loader=test_loader,
                                                    device=device,
                                                    model=model,
                                                    decoder=evaluation_decoder,

@@ -17,7 +17,7 @@ class TrainingConfig:
     finetune: bool = False  # Fine-tune the model from checkpoint "continue_from"
     seed: int = 123456  # Seed for generators
     dist_backend: DistributedBackend = DistributedBackend.nccl  # If using distribution, the backend to be used
-    epochs: int = 75  # Number of Training Epochs
+    epochs: int = 70  # Number of Training Epochs
 
 
 @dataclass
@@ -40,7 +40,7 @@ class AugmentationConfig:
 
 @dataclass
 class DataConfig:
-    train_manifest: str = '/dataset/train1.csv'
+    train_manifest: str = "/dataset/vi_train.csv"
     val_manifest: str = '/dataset/vi_test.csv'
     batch_size: int = 32  # Batch size for training
     num_workers: int = 0  # Number of workers used in data-loading
@@ -52,7 +52,7 @@ class DataConfig:
 @dataclass
 class BiDirectionalConfig:
     rnn_type: RNNType = RNNType.lstm  # Type of RNN to use in model
-    hidden_size: int = 1024  # Hidden size of RNN Layer
+    hidden_size: int = 1600  # Hidden size of RNN Layer
     hidden_layers: int = 7  # Number of RNN layers
 
 

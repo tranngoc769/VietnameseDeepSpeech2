@@ -6,7 +6,7 @@ from deepspeech_pytorch.enums import DecoderType
 class LMConfig:
     #decoder_type: DecoderType = DecoderType.greedy
     decoder_type: DecoderType = DecoderType.beam#quyennn
-    lm_path: str = "/work/languagemodel/ARPA_BINARY/2tr_truyenfull.binary"  # Path to an (optional) kenlm language model for use with beam search (req\'d with trie)
+    lm_path: str = "/work/languagemodel/ARPA_BINARY/final.binary"  # Path to an (optional) kenlm language model for use with beam search (req\'d with trie)
     top_paths: int = 1  # Number of beams to return, có rất nhìu câu sau khi beam trả về
     alpha: float = 2.0  # Language model weight, hihi quyen từ 0.0 ->
     beta: float =  -0.2  # Language model word bonus (all words)    # alpha: float = 0  # Language model weight, hihi quyen từ 0.0 ->
@@ -32,7 +32,7 @@ class InferenceConfig:
 
 @dataclass
 class TranscribeConfig(InferenceConfig):
-    audio_path: str = "/dataset25h/wav/08001.wav"  # Audio file to predict on
+    audio_path: str = "/dataset_stock/test_tts.wav"  # Audio file to predict on
     offsets: bool = False  # Returns time offset information,  bảng ascii
 
 
