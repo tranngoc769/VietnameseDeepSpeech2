@@ -308,7 +308,8 @@ def train(cfg):
             #  print('Training Summary Epoch: [{0}]\t'
             #   'Time taken (s): {epoch_time:.0f}\t'
             #   'Average Loss {loss:.3f}\t'.format(epoch + 1, epoch_time=epoch_time, loss=state.avg_loss))
-            sendReport(epoch+1,'{:.3f}'.format(epoch_time),'{:.3f}'.format(state.avg_loss), '{:.3f}'.format(wer),'{:.3f}'.format(cer),"{:.6f}".format(g['lr']))
+            note = "test note"
+            sendReport(epoch+1,'{:.3f}'.format(epoch_time),'{:.3f}'.format(state.avg_loss), '{:.3f}'.format(wer),'{:.3f}'.format(cer),"{:.6f}".format(g['lr']), note)
         except Exception as esss:
             print('Error :', esss)
         if main_proc and (state.best_wer is None or state.best_wer > wer):
