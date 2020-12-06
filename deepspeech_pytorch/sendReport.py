@@ -11,7 +11,7 @@ def parse_template(file_name):
         msg_template_content = msg_template.read()
     return Template(msg_template_content)
 
-def sendReport(epoch,traintime, loss,wer,cer, lr):
+def sendReport(epoch,traintime, loss,wer,cer, lr, note):
       today = date.today()
       datee = today.strftime("%d/%m/%Y")
       message_template = parse_template('/work/Source/deepspeech.pytorch/deepspeech_pytorch/mailtemp.html')
@@ -21,7 +21,8 @@ def sendReport(epoch,traintime, loss,wer,cer, lr):
       message = message_template.substitute(
             EPOCH_STT=epoch,
             traintime =traintime,
-            loss = loss,wer=wer     ,cer=cer,lr=lr
+            loss = loss,wer=wer     ,cer=cer,lr=lr,
+            note = note
             )
       multipart_msg['From']=FROM_EMAIL
       multipart_msg['To']= TO_EMAIL
