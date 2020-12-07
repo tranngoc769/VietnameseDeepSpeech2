@@ -37,11 +37,11 @@ def evaluate(cfg: EvalConfig):
                                            use_half=cfg.model.use_half)
 
     print('Test Summary \t'
-          'Average WER {wer:.3f}\t'
-          'Average CER {cer:.3f}\t'.format(wer=wer, cer=cer))
+          'Average WER-Beam {wer:.3f}\t'
+          'Average CER-Beam {cer:.3f}\t'.format(wer=wer, cer=cer))
     print(
-          'Average WER2 {wer:.3f}\t'
-          'Average CER2 {cer:.3f}\t'.format(wer=wer2, cer=cer2))          
+          'Average WER-Greedy {wer:.3f}\t'
+          'Average CER-Greedy {cer:.3f}\t'.format(wer=wer2, cer=cer2))          
     if cfg.save_output:
         torch.save(output_data, hydra.utils.to_absolute_path(cfg.save_output))
 
@@ -110,8 +110,8 @@ def run_evaluation(test_loader,
             num_tokens += len(reference.split())
             num_chars += len(reference.replace(' ', ''))
             if verbose:
-                print("Ref:", reference.lower())
-                print("Hyp:", transcript.lower())
+                print("Truth :", reference.lower())
+                print("Beam  :", transcript.lower())
                 print("WER:", float(wer_inst) / len(reference.split()),
                         "CER:", float(cer_inst) / len(reference.replace(' ', '')))
 
@@ -123,7 +123,7 @@ def run_evaluation(test_loader,
             num_tokens2 += len(reference.split())
             num_chars2 += len(reference.replace(' ', ''))
             if verbose:
-                print("Old:",transcript2.lower())
+                print("Greedy:",transcript2.lower())
                 print("WER2:", float(wer_inst2) / len(reference.split()),
                     "CER2:", float(cer_inst2) / len(reference.replace(' ', '')), "\n")
     wer = float(total_wer) / num_tokens

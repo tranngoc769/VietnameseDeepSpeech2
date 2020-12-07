@@ -9,7 +9,7 @@ class LMConfig:
     lm_path: str = "/work/languagemodel/ARPA_BINARY/final-010203.binary"  # Path to an (optional) kenlm language model for use with beam search (req\'d with trie)
     top_paths: int = 1  # Number of beams to return, có rất nhìu câu sau khi beam trả về
     alpha: float = 2.0  # Language model weight, hihi quyen từ 0.0 ->
-    beta: float =  -0.2  # Language model word bonus (all words)    # alpha: float = 0  # Language model weight, hihi quyen từ 0.0 ->
+    beta: float =  1.0  # Language model word bonus (all words)    # alpha: float = 0  # Language model weight, hihi quyen từ 0.0 ->
     # beta: float = 0  # Language model word bonus (all words)
     cutoff_top_n: int = 300  # Cutoff_top_n characters with highest probs in vocabulary will be used in beam search  40->300
     cutoff_prob: float = 1.0  # Cutoff probability in pruning,default 1.0, no pruning.
@@ -32,7 +32,7 @@ class InferenceConfig:
 
 @dataclass
 class TranscribeConfig(InferenceConfig):
-    audio_path: str = "/dataset_stock/QQ/truyen/336.wav"  # Audio file to predict on
+    audio_path: str = "/dataset_stock/QQ/truyen/200.wav"  # Audio file to predict on
     offsets: bool = False  # Returns time offset information,  bảng ascii
 
 
