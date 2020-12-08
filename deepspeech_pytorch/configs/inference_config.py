@@ -38,7 +38,7 @@ class TranscribeConfig(InferenceConfig):
 
 @dataclass
 class EvalConfig(InferenceConfig):
-    test_manifest: str = "/dataset/vi_test.csv"  # Path to validation manifest csv
+    test_manifest: str ="/dataset25h/25hourmin.csv"  # Path to validation manifest csv
     verbose: bool = True  # Print out decoded output and error of each sample
     save_output: str = "/dataset/lm_outtest/outtest"  # Saves output of model from test to this file_path
     batch_size: int = 32  # Batch size for testing quyen 20->
