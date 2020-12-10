@@ -17,7 +17,7 @@ class TrainingConfig:
     finetune: bool = False  # Fine-tune the model from checkpoint "continue_from"
     seed: int = 123456  # Seed for generators
     dist_backend: DistributedBackend = DistributedBackend.nccl  # If using distribution, the backend to be used
-    epochs: int = 70  # Number of Training Epochs
+    epochs: int = 50  # Number of Training Epochs
 
 
 @dataclass
@@ -42,7 +42,7 @@ class AugmentationConfig:
 class DataConfig:
     train_manifest: str = "/dataset/vi_train.csv"
     val_manifest: str = '/dataset/vi_test.csv'
-    batch_size: int = 32  # Batch size for training
+    batch_size: int = 16  # Batch size for training
     num_workers: int = 0  # Number of workers used in data-loading
     labels_path: str = 'labels.json'  # Contains tokens for model output
     spect: SpectConfig = SpectConfig()
@@ -52,8 +52,8 @@ class DataConfig:
 @dataclass
 class BiDirectionalConfig:
     rnn_type: RNNType = RNNType.gru  # Type of RNN to use in model
-    hidden_size: int = 1024  # Hidden size of RNN Layer
-    hidden_layers: int = 7  # Number of RNN layers
+    hidden_size: int = 1600  # Hidden size of RNN Layer
+    hidden_layers: int = 5  # Number of RNN layers
 
 
 @dataclass
@@ -87,7 +87,7 @@ class CheckpointConfig:
     checkpoint_per_iteration: int = 0  # Save checkpoint per N number of iterations. Default is disabled
     save_n_recent_models: int = 10  # Max number of checkpoints to save, delete older checkpoints
     best_val_model_name: str = 'deepspeech_final.pth'  # Name to save best validated model within the save folder
-    load_auto_checkpoint: bool = False  # Automatically load the latest checkpoint from save folder
+    load_auto_checkpoint: bool = True  # Automatically load the latest checkpoint from save folder
 
 
 @dataclass

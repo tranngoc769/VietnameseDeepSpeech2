@@ -6,6 +6,19 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: Flask",
+            "type": "python",
+            "request": "launch",
+            "module": "flask",
+            "env": {
+                "FLASK_APP": "server.py",
+                "FLASK_DEBUG": "1"
+            },
+            "args": [
+                "run",
+            ],
         }
     ]
 }
