@@ -6,7 +6,7 @@ import hydra
 import torch
 from flask import Flask, request, jsonify
 from hydra.core.config_store import ConfigStore
-
+import time
 from deepspeech_pytorch.configs.inference_config import ServerConfig
 from deepspeech_pytorch.inference import run_transcribe
 from deepspeech_pytorch.loader.data_loader import SpectrogramParser
@@ -18,36 +18,57 @@ ALLOWED_EXTENSIONS = set(['.wav', '.mp3', '.ogg', '.webm'])
 cs = ConfigStore.instance()
 cs.store(name="config", node=ServerConfig)
 
-
+import time
 @app.route('/transcribe', methods=['POST'])
 def transcribe_file():
     if request.method == 'POST':
         res = {}
-        if 'file' not in request.files:
-            res['status'] = "error"
-            res['message'] = "audio file should be passed for the transcription"
-            return jsonify(res)
-        file = request.files['file']
-        filename = file.filename
-        _, file_extension = os.path.splitext(filename)
-        if file_extension.lower() not in ALLOWED_EXTENSIONS:
-            res['status'] = "error"
-            res['message'] = "{} is not supported format.".format(file_extension)
-            return jsonify(res)
-        with NamedTemporaryFile(suffix=file_extension) as tmp_saved_audio_file:
-            file.save(tmp_saved_audio_file.name)
-            logging.info('Transcribing file...')
-            transcription, _ = run_transcribe(audio_path=tmp_saved_audio_file,
-                                              spect_parser=spect_parser,
-                                              model=model,
-                                              decoder=decoder,
-                                              device=device,
-                                              use_half=args.half)
-            logging.info('File transcribed')
-            res['status'] = "OK"
-            res['transcription'] = transcription
-            return jsonify(res)
+        res['total'] = 0
+        res['seconds'] = 0
+        t0 = time.time()
 
+        if 'file' not in request.files:
+            res['code'] = 403
+            res['data'] = "Missed audio files"
+            return jsonify(res)
+        try:
+            file = request.files['file']
+            filename = file.filename
+            _, file_extension = os.path.splitext(filename)
+            if file_extension.lower() not in ALLOWED_EXTENSIONS:
+                res['code'] = 403
+                res['data'] = "{} is not supported format.".format(file_extension)
+                return jsonify(res)
+            with NamedTemporaryFile(suffix=file_extension) as tmp_saved_audio_file:
+                file.save(tmp_saved_audio_file.name)
+                logging.info('Transcribing file...')
+                transcription, _ = run_transcribe(audio_path=tmp_saved_audio_file,
+                                                spect_parser=spect_parser,
+                                                model=model,
+                                                decoder=decoder,
+                                                device=device,
+                                                use_half=True)
+                logging.info('File transcribed')
+                res['status'] = 200
+                if (len(transcription) > 0):
+                    res['data'] = transcription[0]
+                    res['total'] = len(transcription[0])
+                else:
+                    res['data'] = transcription
+                    res['total'] = len(transcription)
+        except Exception as exx:
+            res['status'] = 200
+            res['data'] = str(exx)
+        t1 = time.time()
+        total = t1-t0
+        res['seconds'] = total
+        return res
+@app.route('/')
+def index():
+    res = {}
+    res['code'] = 200
+    res['message'] = "index"
+    return jsonify(res)
 
 @hydra.main(config_name="config")
 def main(cfg: ServerConfig):
