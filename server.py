@@ -147,41 +147,28 @@ def index(name):
         data.append(item)
     res['message'] = json.loads(data)
     return render_template('index.html')
-@app.route('/download',methods = ['POST', 'GET'])
-def login():
-    if request.method == 'POST':
-        da = request.data.decode()
-        xx = json.loads(da)
-        path = xx['path']
-        filename = xx['name']
-        return send_file(path, attachment_filename = filename, as_attachment=True)
-    else:
-        return "200"
-
 if __name__ == '__main__':
    app.run(debug = True)
-
-
 @hydra.main(config_name="config")
 def main(cfg: ServerConfig):
-    # global model, spect_parser, decoder, config, device
-    # config = cfg
-    # logging.getLogger().setLevel(logging.DEBUG)
+    global model, spect_parser, decoder, config, device
+    config = cfg
+    logging.getLogger().setLevel(logging.DEBUG)
 
-    # logging.info('Setting up server...')
-    # device = torch.device("cuda" if cfg.model.cuda else "cpu")
+    logging.info('Setting up server...')
+    device = torch.device("cuda" if cfg.model.cuda else "cpu")
 
-    # model = load_model(device=device,
-    #                    model_path=cfg.model.model_path,
-    #                    use_half=cfg.model.use_half)
+    model = load_model(device=device,
+                       model_path=cfg.model.model_path,
+                       use_half=cfg.model.use_half)
 
-    # decoder = load_decoder(labels=model.labels,
-    #                        cfg=cfg.lm)
+    decoder = load_decoder(labels=model.labels,
+                           cfg=cfg.lm)
 
-    # spect_parser = SpectrogramParser(audio_conf=model.audio_conf,
-    #                                  normalize=True)
+    spect_parser = SpectrogramParser(audio_conf=model.audio_conf,
+                                     normalize=True)
 
-    # spect_parser = SpectrogramParser(model.audio_conf, normalize=True)
+    spect_parser = SpectrogramParser(model.audio_conf, normalize=True)
     logging.info('Server initialised')
     app.run(host=cfg.host, port=cfg.port, debug=True, use_reloader=False)
 
