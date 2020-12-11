@@ -14,6 +14,29 @@
     <link href="/static/css/main.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="/static/css/datatables.css">
     <link rel="stylesheet" type="text/css" href="/static/css/dt-global_style.css">
+    <script src="/static/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(document).on('click', 'a[mask="download"]', function () {
+                var path = $(this).attr('path');
+                var name = $(this).attr('name');
+                console.log(path, name)
+                var settings = {
+                    "url": "/download",
+                    "method": "POST",
+                    "timeout": 0,
+                    "headers": {
+                      "Content-Type": "text/plain"
+                    },
+                    "data": `{"path": "${path}", "name":"${name}"}`,
+                  };
+                  
+                  $.ajax(settings).done(function (response) {
+                    window.open(file.url);
+                  });
+                });
+            });
+    </script>
 </head>
 
 <body class="alt-menu sidebar-noneoverflow">
@@ -29,59 +52,123 @@
                                     <div class="col-12">
                                         <div class="statbox widget box box-shadow">
                                             <div class="table-responsive">
-                                                <div id="style-2_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4 no-footer">
+                                                <div id="style-2_wrapper"
+                                                    class="dataTables_wrapper container-fluid dt-bootstrap4 no-footer">
                                                     <!-- Header : breadcrumb + search bar -->
                                                     <!-- Table -->
                                                     <div class="row ">
-                                                        <div class="col-sm-12 " style="max-height: 80vh; overflow-y: auto; overflow-x: hidden; ">
-                                                            <table id="style-2 " class="table style-2 table-hover dataTable no-footer " role="grid " aria-describedby="style-2_info " style="width: 1213px; ">
+                                                        <div class="col-sm-12 "
+                                                            style="max-height: 80vh; overflow-y: auto; overflow-x: hidden; ">
+                                                            <table id="style-2 "
+                                                                class="table style-2 table-hover dataTable no-footer "
+                                                                role="grid " aria-describedby="style-2_info "
+                                                                style="width: 1213px; ">
                                                                 <thead>
                                                                     <tr role="row ">
-                                                                        <th class="sorting " tabindex="0 " aria-controls="style-2 " rowspan="1 " colspan="1 " aria-label="Last Name: activate to sort column ascending " style="width: 15%; ">User</th>
-                                                                        <th class="sorting " tabindex="0 " aria-controls="style-2 " rowspan="1 " colspan="1 " aria-label="Last Name: activate to sort column ascending " style="width: 15%; ">Name</th>
-                                                                        <th class="sorting " tabindex="0 " aria-controls="style-2 " rowspan="1 " colspan="1 " aria-label="Email: activate to sort column ascending " style="width: 15%; ">Size</th>
-                                                                        <th class="sorting_desc " tabindex="0 " aria-controls="style-2 " rowspan="1 " colspan="1 " aria-label="Mobile No.: activate to sort column ascending " style="width: 20%; " aria-sort="descending ">Date Created</th>
-                                                                        <th class="sorting_desc " tabindex="0 " aria-controls="style-2 " rowspan="1 " colspan="1 " aria-label="Mobile No.: activate to sort column ascending " style="width: 20%; " aria-sort="descending ">Date Upload</th>
-                                                                        <th class="text-center " tabindex="0 " aria-controls="style-2 " rowspan="1 " colspan="1 ">Action</th>
+                                                                        <th class="sorting " tabindex="0 "
+                                                                            aria-controls="style-2 " rowspan="1 "
+                                                                            colspan="1 "
+                                                                            aria-label="Last Name: activate to sort column ascending "
+                                                                            style="width: 15%; ">User</th>
+                                                                        <th class="sorting " tabindex="0 "
+                                                                            aria-controls="style-2 " rowspan="1 "
+                                                                            colspan="1 "
+                                                                            aria-label="Last Name: activate to sort column ascending "
+                                                                            style="width: 15%; ">Name</th>
+                                                                        <th class="sorting " tabindex="0 "
+                                                                            aria-controls="style-2 " rowspan="1 "
+                                                                            colspan="1 "
+                                                                            aria-label="Email: activate to sort column ascending "
+                                                                            style="width: 15%; ">Size</th>
+                                                                        <th class="sorting_desc " tabindex="0 "
+                                                                            aria-controls="style-2 " rowspan="1 "
+                                                                            colspan="1 "
+                                                                            aria-label="Mobile No.: activate to sort column ascending "
+                                                                            style="width: 20%; "
+                                                                            aria-sort="descending ">Date Created</th>
+                                                                        <th class="sorting_desc " tabindex="0 "
+                                                                            aria-controls="style-2 " rowspan="1 "
+                                                                            colspan="1 "
+                                                                            aria-label="Mobile No.: activate to sort column ascending "
+                                                                            style="width: 20%; "
+                                                                            aria-sort="descending ">Date Upload</th>
+                                                                        <th class="text-center " tabindex="0 "
+                                                                            aria-controls="style-2 " rowspan="1 "
+                                                                            colspan="1 ">Action</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <!-- File table -->
                                                                 <tbody id="storageFiles">
-                                                                   
+
                                                                     <tr role="row" class="odd ">
                                                                         {% for item in data['message'] %}
-                                                                            <td  {% if item['type'] == 'Folder' %} style="color: #ffffff;" {% endif %}>
-                                                                                {{item['name']}}
-                                                                            </td>
-                                                                            <td class="sorting_1 ">
-                                                                                {{item['path']}}
-                                                                            </td>
-                                                                            <td class="sorting_1 ">
-                                                                                {% if item['type'] == 'Folder' %} Folder{% else %}{{item['size']}} KB{% endif %}
-                                                                            </td>
-                                                                            <td class="sorting_1 ">
-                                                                                {{item['date_access']}}
-                                                                            </td>
-                                                                            <td class="sorting_1 ">
-                                                                                {{item['date_create']}}
-                                                                            </td>
-                                                                            <td class="text-center ">
-                                                                                <td > {% if item['type'] != 'Folder' %} 
-                                                                                <a href="/file/{{item['path']}}" class="bs-tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Download ">
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download ">
-                                                                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 ">
-                                                                                                </path>
-                                                                                                <polyline points="7 10 12 15 17 10 ">
-                                                                                                </polyline><line x1="12" y1="15" x2="12" y2="3">
-                                                                                        </line>
-                                                                                        </svg>
-                                                                                </a>
-                                                                                {% else %}
-                                                                                <a href="/file/{{item['path']}}" class="bs-tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Download ">
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                                                                                </a>
-                                                                                {% endif %}
-                                                                            </td>
+                                                                        <td {% if item['type'] == 'Folder' %}
+                                                                            style="color: #ffffff;" {% endif %}>
+                                                                            {{item['name']}}
+                                                                        </td>
+                                                                        <td class="sorting_1 ">
+                                                                            {{item['path']}}
+                                                                        </td>
+                                                                        <td class="sorting_1 ">
+                                                                            {% if item['type'] == 'Folder' %}
+                                                                            Folder{% else %}{{item['size']}}
+                                                                            KB{% endif %}
+                                                                        </td>
+                                                                        <td class="sorting_1 ">
+                                                                            {{item['date_access']}}
+                                                                        </td>
+                                                                        <td class="sorting_1 ">
+                                                                            {{item['date_create']}}
+                                                                        </td>
+                                                                        <td class="text-center ">
+                                                                        <td> {% if item['type'] != 'Folder' %}
+                                                                            <a href="/download/{{item['path']}}" 
+                                                                                path="{{item['path']}}"
+                                                                                name="{{item['name']}}"
+                                                                                class="bs-tooltip" data-toggle="tooltip"
+                                                                                data-placement="top" title=""
+                                                                                data-original-title="Download ">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                                                    width="24" height="24"
+                                                                                    viewBox="0 0 24 24" fill="none"
+                                                                                    stroke="currentColor"
+                                                                                    stroke-width="2"
+                                                                                    stroke-linecap="round"
+                                                                                    stroke-linejoin="round"
+                                                                                    class="feather feather-download ">
+                                                                                    <path
+                                                                                        d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 ">
+                                                                                    </path>
+                                                                                    <polyline
+                                                                                        points="7 10 12 15 17 10 ">
+                                                                                    </polyline>
+                                                                                    <line x1="12" y1="15" x2="12"
+                                                                                        y2="3">
+                                                                                    </line>
+                                                                                </svg>
+                                                                            </a>
+                                                                            {% else %}
+                                                                            <a href="/file/{{item['path']}}"
+                                                                                class="bs-tooltip" data-toggle="tooltip"
+                                                                                data-placement="top" title=""
+                                                                                data-original-title="View">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                                                    width="24" height="24"
+                                                                                    viewBox="0 0 24 24" fill="none"
+                                                                                    stroke="currentColor"
+                                                                                    stroke-width="2"
+                                                                                    stroke-linecap="round"
+                                                                                    stroke-linejoin="round"
+                                                                                    class="feather feather-send">
+                                                                                    <line x1="22" y1="2" x2="11"
+                                                                                        y2="13"></line>
+                                                                                    <polygon
+                                                                                        points="22 2 15 22 11 13 2 9 22 2">
+                                                                                    </polygon>
+                                                                                </svg>
+                                                                            </a>
+                                                                            {% endif %}
+                                                                        </td>
                                                                     </tr>
                                                                     {% endfor %}
                                                                 </tbody>
