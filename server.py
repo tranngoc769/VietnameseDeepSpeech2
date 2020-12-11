@@ -147,8 +147,6 @@ def index(name):
         data.append(item)
     res['message'] = json.loads(data)
     return render_template('index.html')
-if __name__ == '__main__':
-   app.run(debug = True)
 @hydra.main(config_name="config")
 def main(cfg: ServerConfig):
     global model, spect_parser, decoder, config, device
