@@ -13,6 +13,7 @@ from deepspeech_pytorch.loader.data_loader import SpectrogramParser
 from deepspeech_pytorch.utils import load_model, load_decoder
 from flask import send_file, send_from_directory
 from flask import render_template
+from flask_cors import CORS, cross_origin
 import glob
 app = Flask(__name__)
 ALLOWED_EXTENSIONS = set(['.wav', '.mp3', '.ogg', '.webm'])
@@ -77,6 +78,7 @@ def page_not_found(e):
         res['message'] = data
         return render_template('file.html', data = res)
 @app.route('/transcribe', methods=['POST'])
+@cross_origin()
 def transcribe_file():
     if request.method == 'POST':
         res = {}
@@ -96,10 +98,40 @@ def transcribe_file():
                 res['code'] = 403
                 res['data'] = "{} is not supported format.".format(file_extension)
                 return jsonify(res)
-            with NamedTemporaryFile(suffix=file_extension) as tmp_saved_audio_file:
+            with NamedTemporaryFile(suffix=file_extension, dir='/transcribe_tmp') as tmp_saved_audio_file:
                 file.save(tmp_saved_audio_file.name)
+                path = tmp_saved_audio_file.name
+                if (file_extension.lower()==".webm"):
+                    # copyFile = tmp_saved_audio_file.name
+                    # copyFile = copyFile + ".webm"
+                    # strCopy = "cp {0} {1}".format(tmp_saved_audio_file.name,copyFile)
+                    # os.system(strCopy)
+                    # wavName = tmp_saved_audio_file.name
+                    # wavName = wavName.replace("webm", "wav")
+                    # strCv = "ffmpeg -i {0} -r 16000 -bits_per_raw_sample 16 -ac 1 {1}".format(tmp_saved_audio_file.name, wavName)
+                    # os.system(strCv)
+                    # path = wavName
+
+                    #-------------------
+                    
+                    #chuyen sang webm->mp3
+                    src1 = tmp_saved_audio_file.name
+                    dst1 = tmp_saved_audio_file.name
+                    dst1 = dst1.replace("webm", "mp3")
+                    from convertWebmToMp3 import convertWebmToMp3
+                    convertWebmToMp3(src1, dst1)
+
+                    #chuyen mp3->wav 16000Hz
+                    src2=dst1
+                    dst2=dst1.replace("mp3", "wav")
+                    from convertWav16 import convertMp3ToWav16
+                    convertMp3ToWav16(src2, dst2)
+
+                    path = dst2
+                print("File name : "+str(path))
+                # strCovert = "ffmpeg -i "+"/transcribe_tmp/tmpbh97i2v0.webm" +" -c:a pcm_f32le "+/transcribe_tmp/ou2t.wav"
                 logging.info('Transcribing file...')
-                transcription, _ = run_transcribe(audio_path=tmp_saved_audio_file,
+                transcription, _ = run_transcribe(audio_path=path,
                                                 spect_parser=spect_parser,
                                                 model=model,
                                                 decoder=decoder,
@@ -108,17 +140,18 @@ def transcribe_file():
                 logging.info('File transcribed')
                 res['status'] = 200
                 if (len(transcription) > 0):
-                    res['data'] = transcription[0]
+                    res['data'] = transcription[0][0]
                     res['total'] = len(transcription[0])
                 else:
                     res['data'] = transcription
                     res['total'] = len(transcription)
         except Exception as exx:
-            res['status'] = 200
+            res['status'] = 403
             res['data'] = str(exx)
         t1 = time.time()
         total = t1-t0
         res['seconds'] = total
+        print(res)
         return res
 @app.route('/file')
 def index(name):

@@ -17,7 +17,7 @@ class TrainingConfig:
     finetune: bool = False  # Fine-tune the model from checkpoint "continue_from"
     seed: int = 123456  # Seed for generators
     dist_backend: DistributedBackend = DistributedBackend.nccl  # If using distribution, the backend to be used
-    epochs: int = 50  # Number of Training Epochs
+    epochs: int = 70  # Number of Training Epochs
 
 
 @dataclass

@@ -21,7 +21,7 @@ class LMConfig:
 class ModelConfig:
     use_half: bool = True  # Use half precision. This is recommended when using mixed-precision at training time
     cuda: bool = True
-    model_path: str = "/work/Source/deepspeech.pytorch/models/deepspeech_70_gru.pth" 
+    model_path: str = "/work/Source/deepspeech.pytorch/models/deepspeech_50_1600.pth" 
 
 
 @dataclass
