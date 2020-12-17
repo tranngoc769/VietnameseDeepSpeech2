@@ -17,7 +17,7 @@ class TrainingConfig:
     finetune: bool = False  # Fine-tune the model from checkpoint "continue_from"
     seed: int = 123456  # Seed for generators
     dist_backend: DistributedBackend = DistributedBackend.nccl  # If using distribution, the backend to be used
-    epochs: int = 70  # Number of Training Epochs
+    epochs: int = 50  # Number of Training Epochs
 
 
 @dataclass
@@ -51,7 +51,7 @@ class DataConfig:
 #cấu hình của model 
 @dataclass
 class BiDirectionalConfig:
-    rnn_type: RNNType = RNNType.gru  # Type of RNN to use in model
+    rnn_type: RNNType = RNNType.lstm  # Type of RNN to use in model
     hidden_size: int = 1600  # Hidden size of RNN Layer
     hidden_layers: int = 5  # Number of RNN layers
 

@@ -15,6 +15,10 @@ from flask import send_file, send_from_directory
 from flask import render_template
 from flask_cors import CORS, cross_origin
 import glob
+from convertWav16 import convertMp3ToWav16
+from convertWebmToMp3 import convertWebmToMp3
+
+
 app = Flask(__name__)
 ALLOWED_EXTENSIONS = set(['.wav', '.mp3', '.ogg', '.webm'])
 
@@ -85,7 +89,7 @@ def transcribe_file():
         res['total'] = 0
         res['seconds'] = 0
         t0 = time.time()
-
+        transTxt = ""
         if 'file' not in request.files:
             res['code'] = 403
             res['data'] = "Missed audio files"
@@ -98,36 +102,40 @@ def transcribe_file():
                 res['code'] = 403
                 res['data'] = "{} is not supported format.".format(file_extension)
                 return jsonify(res)
-            with NamedTemporaryFile(suffix=file_extension, dir='/transcribe_tmp') as tmp_saved_audio_file:
-                file.save(tmp_saved_audio_file.name)
-                path = tmp_saved_audio_file.name
+            with NamedTemporaryFile(prefix="product_",suffix=file_extension, dir='/work/dataset_product/wav', delete=False) as temp_audio:
+                file.save(temp_audio.name)
+                path = temp_audio.name
                 if (file_extension.lower()==".webm"):
-                    # copyFile = tmp_saved_audio_file.name
+                    # copyFile = temp_audio.name
                     # copyFile = copyFile + ".webm"
-                    # strCopy = "cp {0} {1}".format(tmp_saved_audio_file.name,copyFile)
+                    # strCopy = "cp {0} {1}".format(temp_audio.name,copyFile)
                     # os.system(strCopy)
-                    # wavName = tmp_saved_audio_file.name
+                    # wavName = temp_audio.name
                     # wavName = wavName.replace("webm", "wav")
-                    # strCv = "ffmpeg -i {0} -r 16000 -bits_per_raw_sample 16 -ac 1 {1}".format(tmp_saved_audio_file.name, wavName)
+                    # strCv = "ffmpeg -i {0} -r 16000 -bits_per_raw_sample 16 -ac 1 {1}".format(temp_audio.name, wavName)
                     # os.system(strCv)
                     # path = wavName
 
                     #-------------------
                     
                     #chuyen sang webm->mp3
-                    src1 = tmp_saved_audio_file.name
-                    dst1 = tmp_saved_audio_file.name
-                    dst1 = dst1.replace("webm", "mp3")
-                    from convertWebmToMp3 import convertWebmToMp3
-                    convertWebmToMp3(src1, dst1)
-
+                    src1 = temp_audio.name #.webm
+                    dst1 = temp_audio.name #.webm
+                    dst1 = dst1.replace("webm", "mp3") #.mp3
+                    convertWebmToMp3(src1, dst1)  #.wav
                     #chuyen mp3->wav 16000Hz
                     src2=dst1
                     dst2=dst1.replace("mp3", "wav")
-                    from convertWav16 import convertMp3ToWav16
                     convertMp3ToWav16(src2, dst2)
-
+                    os.remove(dst1)
                     path = dst2
+                if (file_extension.lower()==".mp3"):
+                     #chuyen mp3->wav 16000Hz
+                    src= temp_audio.name
+                    dst=src.replace("mp3", "wav")
+                    convertMp3ToWav16(src, dst)
+                    path = dst
+                os.remove(temp_audio.name)
                 print("File name : "+str(path))
                 # strCovert = "ffmpeg -i "+"/transcribe_tmp/tmpbh97i2v0.webm" +" -c:a pcm_f32le "+/transcribe_tmp/ou2t.wav"
                 logging.info('Transcribing file...')
@@ -145,14 +153,82 @@ def transcribe_file():
                 else:
                     res['data'] = transcription
                     res['total'] = len(transcription)
+                transTxt = path.replace("wav", "txt")
+                with open(transTxt,"w") as textFile:
+                    textFile.write(res['data'])
+                #os.remove(dst2)
         except Exception as exx:
             res['status'] = 403
             res['data'] = str(exx)
         t1 = time.time()
         total = t1-t0
         res['seconds'] = total
-        print(res)
         return res
+# 
+
+
+@app.route('/suggest', methods=['POST'])
+@cross_origin()
+def suggest_file():
+    if request.method == 'POST':
+        res = {}
+        res['total'] = 0
+        transTxt = ""
+        if 'file' not in request.files:
+            res['code'] = 403
+            res['data'] = "Missed audio files"
+            return jsonify(res)
+        try:
+            file = request.files['file']
+            filename = file.filename
+            _, file_extension = os.path.splitext(filename)
+            if file_extension.lower() not in ALLOWED_EXTENSIONS:
+                res['code'] = 403
+                res['data'] = "{} is not supported format.".format(file_extension)
+                print(res['data'])
+                return jsonify(res)
+            with NamedTemporaryFile(prefix="product_",suffix=file_extension, dir='/work/dataset_fpt/wav', delete=False) as temp_audio:
+                file.save(temp_audio.name)
+                path = temp_audio.name
+                if (file_extension.lower()==".webm"):
+                    src1 = temp_audio.name #.webm
+                    dst1 = temp_audio.name #.webm
+                    dst1 = dst1.replace("webm", "mp3") #.mp3
+                    convertWebmToMp3(src1, dst1)  #.wav
+                    src2=dst1
+                    dst2=dst1.replace("mp3", "wav")
+                    convertMp3ToWav16(src2, dst2)
+                    os.remove(dst1)
+                    try:
+                        os.remove(src1)
+                    except:
+                        pass
+                    os.remove(dst1)
+                    path = dst2
+                if (file_extension.lower()==".mp3"):
+                    src= temp_audio.name
+                    dst=src.replace("mp3", "wav")
+                    convertMp3ToWav16(src, dst)
+                    path = dst
+                print("File name : "+str(path))
+                transcription, _ = run_transcribe(audio_path=path,spect_parser=spect_parser,model=model,decoder=decoder,device=device,use_half=True)
+                res['status'] = 200
+                if (len(transcription) > 0):
+                    res['data'] = transcription[0][0]
+                    res['total'] = len(transcription[0])
+                else:
+                    res['data'] = transcription
+                    res['total'] = len(transcription)
+                transTxt = path.replace("wav", "txt")
+                with open(transTxt,"w") as textFile:
+                    textFile.write(res['data'])
+                #os.remove(dst2)
+        except Exception as exx:
+            res['status'] = 403
+            res['data'] = str(exx)
+        return res
+# 
+
 @app.route('/file')
 def index(name):
     res = {}
