@@ -81,13 +81,14 @@ def run_transcribe(audio_path: str,
                    device: torch.device,
                    use_half: bool):
     # audio_path
-    try:
-        inTranscript = audio_path.replace("wav", "txt")
-        print(inTranscript)
-        getTranscript(inTranscript)
-    except Exception as asd:
-        print(asd)
-        pass
+    # try:
+    #     # inTranscript = audio_path.replace("wav", "txt")
+    #     # print(inTranscript)
+    #     # getTranscript(inTranscript)
+    #     pass
+    # except Exception as asd:
+    #     print(asd)
+    #     pass
     spect = spect_parser.parse_audio(audio_path).contiguous()
     spect = spect.view(1, 1, spect.size(0), spect.size(1))
     spect = spect.to(device)

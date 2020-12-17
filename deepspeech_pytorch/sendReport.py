@@ -5,7 +5,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 FROM_EMAIL = 'githubreporter@zohomail.com'
 MY_PASSWORD = 'quang7699'
-TO_EMAIL = 'hocmai6@gmail.com,tnquang.769@gmail.com,hoangquyen7901@gmail.com'
+TO_EMAIL = 'hocmai6@gmail.com,tnquang.769@gmail.com,qq706712@gmail.com'
 def parse_template(file_name):
     with open(file_name, 'r', encoding='utf-8') as msg_template:
         msg_template_content = msg_template.read()
