@@ -6,7 +6,7 @@ from deepspeech_pytorch.enums import DecoderType
 class LMConfig:
     #decoder_type: DecoderType = DecoderType.greedy
     decoder_type: DecoderType = DecoderType.beam#quyennn
-    lm_path: str = "/work/languagemodel/ARPA_BINARY/final-1234.binary"  # Path to an (optional) kenlm language model for use with beam search (req\'d with trie)
+    lm_path: str = "/work/languagemodel/ARPA_BINARY/final-1234.binary" # Path to an (optional) kenlm language model for use with beam search (req\'d with trie)
     top_paths: int = 1  # Number of beams to return, có rất nhìu câu sau khi beam trả về
     alpha: float = 2.0  # Language model weight, hihi quyen từ 0.0 ->
     beta: float =  1.0  # Language model word bonus (all words)    # alpha: float = 0  # Language model weight, hihi quyen từ 0.0 ->
