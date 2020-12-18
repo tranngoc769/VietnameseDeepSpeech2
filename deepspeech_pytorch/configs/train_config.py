@@ -85,7 +85,7 @@ class CheckpointConfig:
     continue_from: str = ''  # Continue training from checkpoint model
     checkpoint: bool = True  # Enables epoch checkpoint saving of model
     checkpoint_per_iteration: int = 0  # Save checkpoint per N number of iterations. Default is disabled
-    save_n_recent_models: int = 10  # Max number of checkpoints to save, delete older checkpoints
+    save_n_recent_models: int = 5  # Max number of checkpoints to save, delete older checkpoints
     best_val_model_name: str = 'deepspeech_final.pth'  # Name to save best validated model within the save folder
     load_auto_checkpoint: bool = True  # Automatically load the latest checkpoint from save folder
 
