@@ -164,12 +164,12 @@ class DeepSpeech(nn.Module):
         rnns = []
         rnn = BatchRNN(input_size=rnn_input_size, hidden_size=rnn_hidden_size, rnn_type=rnn_type,
                        bidirectional=bidirectional, batch_norm=False)
-        rnns.append(('0', rnn))
+        rnns.append(('0', rnn))#Lớp đầu tiên ko có chuẩn hóa
         for x in range(nb_layers - 1):
             rnn = BatchRNN(input_size=rnn_hidden_size, hidden_size=rnn_hidden_size, rnn_type=rnn_type,
                            bidirectional=bidirectional)
             rnns.append(('%d' % (x + 1), rnn))
-        self.rnns = nn.Sequential(OrderedDict(rnns))
+        self.rnns = nn.Sequential(OrderedDict(rnns))#nn.Sequential Thêm các key '1', '2','3' cho các lớp rnn
         self.lookahead = nn.Sequential(
             # consider adding batch norm?
             Lookahead(rnn_hidden_size, context=context),

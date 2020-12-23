@@ -164,7 +164,7 @@ class GreedyDecoder(Decoder):
         offsets = [] if return_offsets else None
         for x in xrange(len(sequences)):
             seq_len = sizes[x] if sizes is not None else len(sequences[x])#len sequences[x]
-            string, string_offsets = self.process_string(sequences[x], seq_len, remove_repetitions)
+            string, string_offsets = self.process_string(sequences[x], seq_len, remove_repetitions)#string_offsets là tập hợp các kí tự có trong câu văn bản, các kí tự đã sắp xếp theo tăng dần
             strings.append([string])  # We only return one path
             if return_offsets:
                 offsets.append([string_offsets])
@@ -172,7 +172,7 @@ class GreedyDecoder(Decoder):
             return strings, offsets
         else:
             return strings
-
+#process_string là hàm bỏ đi các kí tự trùng _ 00000000000 trong mảng
     def process_string(self,
                        sequence,
                        size,
@@ -238,3 +238,4 @@ class GreedyDecoder(Decoder):
 #          0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
 #          0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
 #          0,  0,  0,  0,  0,  0,  0,  0,  0,  0], device='cuda:0')
+

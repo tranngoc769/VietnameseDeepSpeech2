@@ -1,7 +1,7 @@
 import logging
 import os
 from tempfile import NamedTemporaryFile
-
+import requests
 import hydra
 import torch
 from flask import Flask, request, jsonify
@@ -14,20 +14,55 @@ from deepspeech_pytorch.utils import load_model, load_decoder
 from flask import send_file, send_from_directory
 from flask import render_template
 from flask_cors import CORS, cross_origin
+from flaskext.mysql import MySQL
 import glob
 from convertWav16 import convertMp3ToWav16
 from convertWebmToMp3 import convertWebmToMp3
+import time
+import datetime
+import json
 
-
+mysqlService = False
+mysql = None
+conn = None
 app = Flask(__name__)
+try:
+    mysql = MySQL()
+    app.config['MYSQL_DATABASE_USER'] = 'root'
+    app.config['MYSQL_DATABASE_PASSWORD'] = '07061999'
+    app.config['MYSQL_DATABASE_DB'] = 'vnsr'
+    app.config['MYSQL_DATABASE_Host'] = 'localhost'
+    mysql.init_app(app)
+    conn = mysql.connect()
+    mysqlService = True
+except:
+    mysqlService = False
+def queryNonDataSql(sql):
+    if mysqlService == False:
+        return False
+    try:
+        cursor = conn.cursor()
+        cursor.execute(sql)
+        conn.commit()
+        return True
+    except:
+        return False
+def queryDataSql(sql):
+    if mysqlService == False:
+        return False
+    try:
+        cursor = conn.cursor()
+        cursor.execute(sql)
+        data = cursor.fetchall()
+        conn.commit()
+        return data
+    except:
+        return False
 ALLOWED_EXTENSIONS = set(['.wav', '.mp3', '.ogg', '.webm'])
 
 cs = ConfigStore.instance()
 cs.store(name="config", node=ServerConfig)
 
-import time
-import datetime
-import json
 @app.errorhandler(404)
 def page_not_found(e):
     request.path = request.path.replace("//", "/")
@@ -153,6 +188,7 @@ def transcribe_file():
                 else:
                     res['data'] = transcription
                     res['total'] = len(transcription)
+                res['path'] = path
                 transTxt = path.replace("wav", "txt")
                 with open(transTxt,"w") as textFile:
                     textFile.write(res['data'])
@@ -165,68 +201,110 @@ def transcribe_file():
         res['seconds'] = total
         return res
 # 
-
-
-@app.route('/suggest', methods=['POST'])
+# Get transcribe FPT
+@app.route('/fpt', methods=['POST'])
 @cross_origin()
-def suggest_file():
-    if request.method == 'POST':
-        res = {}
-        res['total'] = 0
-        transTxt = ""
-        if 'file' not in request.files:
-            res['code'] = 403
-            res['data'] = "Missed audio files"
-            return jsonify(res)
-        try:
-            file = request.files['file']
-            filename = file.filename
-            _, file_extension = os.path.splitext(filename)
-            if file_extension.lower() not in ALLOWED_EXTENSIONS:
-                res['code'] = 403
-                res['data'] = "{} is not supported format.".format(file_extension)
-                print(res['data'])
-                return jsonify(res)
-            with NamedTemporaryFile(prefix="product_",suffix=file_extension, dir='/work/dataset_fpt/wav', delete=False) as temp_audio:
-                file.save(temp_audio.name)
-                path = temp_audio.name
-                if (file_extension.lower()==".webm"):
-                    src1 = temp_audio.name #.webm
-                    dst1 = temp_audio.name #.webm
-                    dst1 = dst1.replace("webm", "mp3") #.mp3
-                    convertWebmToMp3(src1, dst1)  #.wav
-                    src2=dst1
-                    dst2=dst1.replace("mp3", "wav")
-                    convertMp3ToWav16(src2, dst2)
-                    os.remove(dst1)
-                    try:
-                        os.remove(src1)
-                    except:
-                        pass
-                    os.remove(dst1)
-                    path = dst2
-                if (file_extension.lower()==".mp3"):
-                    src= temp_audio.name
-                    dst=src.replace("mp3", "wav")
-                    convertMp3ToWav16(src, dst)
-                    path = dst
-                print("File name : "+str(path))
-                transcription, _ = run_transcribe(audio_path=path,spect_parser=spect_parser,model=model,decoder=decoder,device=device,use_half=True)
-                res['status'] = 200
-                if (len(transcription) > 0):
-                    res['data'] = transcription[0][0]
-                    res['total'] = len(transcription[0])
-                else:
-                    res['data'] = transcription
-                    res['total'] = len(transcription)
-                transTxt = path.replace("wav", "txt")
-                with open(transTxt,"w") as textFile:
-                    textFile.write(res['data'])
-                #os.remove(dst2)
-        except Exception as exx:
-            res['status'] = 403
-            res['data'] = str(exx)
-        return res
+def FPTapi():
+    path = None
+    try:
+        path = request.form['path']
+    except:
+        pass
+
+    data = queryDataSql('SELECT * FROM apikey LIMIT 1')
+    if (data == False):
+        return json.dumps({"status": 403, "msg": "Không thể truy cập database"}, ensure_ascii=False)
+    if  (len(data) == 0):
+        return json.dumps({"status": 404, "msg": "Đã hết key FPT"}, ensure_ascii=False)
+    key = data[0][2]
+    keyid = data[0][0]
+    try:
+        url = 'https://api.fpt.ai/hmi/asr/general'
+        payload = None
+        if (path != None):
+            payload = open(path, 'rb').read()
+        else:
+            return json.dumps({"status": 404, "msg": "{0}".format(str("V1 API, not allow null path"))}, ensure_ascii=False)
+        headers = {
+            'api-key': '{0}'.format(key)
+        }
+        response = requests.post(url=url, data=payload, headers=headers)
+        result = response.json()
+        if (response.status_code == 401):
+            print(result['message'])
+            queryRes = queryNonDataSql('DELETE FROM apikey WHERE apikey.id = {0}'.format(keyid))
+            FPTapi()
+        if (response.status_code != 200):
+            return json.dumps({"status": 404, "msg": "{0}".format(str("API not found"))}, ensure_ascii=False)
+        if (result['status'] != 0):
+            return json.dumps({"status": 403, "msg": "{0}".format(result['message'])}, ensure_ascii=False) 
+        trans = result['hypotheses']
+        if (len(trans) < 0):
+            return json.dumps({"status": 403, "msg": "{0}".format("Không tìm thấy kết quả")}, ensure_ascii=False)
+        return  json.dumps({"status": 200, "msg": "{0}".format(trans[0]['utterance'])}, ensure_ascii=False)
+    except Exception as err:
+        return json.dumps({"status": 403, "msg": "{0}".format(str(err))}, ensure_ascii=False)
+
+# @app.route('/suggest', methods=['POST'])
+# @cross_origin()
+# def suggest_file():
+#     if request.method == 'POST':
+#         res = {}
+#         res['total'] = 0
+#         transTxt = ""
+#         if 'file' not in request.files:
+#             res['code'] = 403
+#             res['data'] = "Missed audio files"
+#             return jsonify(res)
+#         try:
+#             file = request.files['file']
+#             filename = file.filename
+#             _, file_extension = os.path.splitext(filename)
+#             if file_extension.lower() not in ALLOWED_EXTENSIONS:
+#                 res['code'] = 403
+#                 res['data'] = "{} is not supported format.".format(file_extension)
+#                 print(res['data'])
+#                 return jsonify(res)
+#             with NamedTemporaryFile(prefix="product_",suffix=file_extension, dir='/work/dataset_fpt/wav', delete=False) as temp_audio:
+#                 file.save(temp_audio.name)
+#                 path = temp_audio.name
+#                 if (file_extension.lower()==".webm"):
+#                     src1 = temp_audio.name #.webm
+#                     dst1 = temp_audio.name #.webm
+#                     dst1 = dst1.replace("webm", "mp3") #.mp3
+#                     convertWebmToMp3(src1, dst1)  #.wav
+#                     src2=dst1
+#                     dst2=dst1.replace("mp3", "wav")
+#                     convertMp3ToWav16(src2, dst2)
+#                     os.remove(dst1)
+#                     try:
+#                         os.remove(src1)
+#                     except:
+#                         pass
+#                     os.remove(dst1)
+#                     path = dst2
+#                 if (file_extension.lower()==".mp3"):
+#                     src= temp_audio.name
+#                     dst=src.replace("mp3", "wav")
+#                     convertMp3ToWav16(src, dst)
+#                     path = dst
+#                 print("File name : "+str(path))
+#                 transcription, _ = run_transcribe(audio_path=path,spect_parser=spect_parser,model=model,decoder=decoder,device=device,use_half=True)
+#                 res['status'] = 200
+#                 if (len(transcription) > 0):
+#                     res['data'] = transcription[0][0]
+#                     res['total'] = len(transcription[0])
+#                 else:
+#                     res['data'] = transcription
+#                     res['total'] = len(transcription)
+#                 transTxt = path.replace("wav", "txt")
+#                 with open(transTxt,"w") as textFile:
+#                     textFile.write(res['data'])
+#                 #os.remove(dst2)
+#         except Exception as exx:
+#             res['status'] = 403
+#             res['data'] = str(exx)
+#         return res
 # 
 @app.route('/file')
 def index(name):
