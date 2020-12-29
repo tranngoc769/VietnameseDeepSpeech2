@@ -40,9 +40,10 @@ class AugmentationConfig:
 
 @dataclass
 class DataConfig:
-    train_manifest: str = "/dataset/train1.csv"
+    train_manifest: str = "/work/dataset_vinpro/train_fpt_11.csv"
+    #train_manifest: str = "/dataset/vi_train.csv"
     val_manifest: str = '/dataset/vi_test.csv'
-    batch_size: int = 16  # Batch size for training
+    batch_size: int = 25  # Batch size for training
     num_workers: int = 0  # Number of workers used in data-loading
     labels_path: str = 'labels.json'  # Contains tokens for model output
     spect: SpectConfig = SpectConfig()
@@ -86,8 +87,8 @@ class CheckpointConfig:
     checkpoint: bool = True  # Enables epoch checkpoint saving of model
     checkpoint_per_iteration: int = 0  # Save checkpoint per N number of iterations. Default is disabled
     save_n_recent_models: int = 5  # Max number of checkpoints to save, delete older checkpoints
-    best_val_model_name: str = 'deepspeech_final.pth'  # Name to save best validated model within the save folder
-    load_auto_checkpoint: bool = False  # Automatically load the latest checkpoint from save folder
+    best_val_model_name: str = 'deepspeech_final_1600_vinfpt_32_50.pth'  # Name to save best validated model within the save folder
+    load_auto_checkpoint: bool = True  # Automatically load the latest checkpoint from save folder
 
 
 @dataclass

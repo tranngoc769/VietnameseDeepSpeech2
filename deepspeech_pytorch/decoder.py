@@ -107,9 +107,9 @@ class BeamCTCDecoder(Decoder):
 
     def convert_to_strings(self, out, seq_len):
         results = []
-        for b, batch in enumerate(out):
+        for b, batch in enumerate(out):#batch là batch size, có bn câu nói trong 1 batch size
             utterances = []
-            for p, utt in enumerate(batch):
+            for p, utt in enumerate(batch):# 1024 output cho 1 câu nói
                 size = seq_len[b][p]
                 if size > 0:
                     transcript = ''.join(map(lambda x: self.int_to_char[x.item()], utt[0:size]))

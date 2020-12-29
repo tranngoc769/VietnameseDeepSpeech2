@@ -170,7 +170,8 @@ def transcribe_file():
                     dst=src.replace("mp3", "wav")
                     convertMp3ToWav16(src, dst)
                     path = dst
-                os.remove(temp_audio.name)
+                if (file_extension.lower()!=".wav"):
+                    os.remove(temp_audio.name)
                 print("File name : "+str(path))
                 # strCovert = "ffmpeg -i "+"/transcribe_tmp/tmpbh97i2v0.webm" +" -c:a pcm_f32le "+/transcribe_tmp/ou2t.wav"
                 logging.info('Transcribing file...')
@@ -199,6 +200,7 @@ def transcribe_file():
         t1 = time.time()
         total = t1-t0
         res['seconds'] = total
+        print('success')
         return res
 # 
 # Get transcribe FPT
@@ -335,17 +337,19 @@ def index(name):
     return render_template('index.html')
 @hydra.main(config_name="config")
 def main(cfg: ServerConfig):
-    global model, spect_parser, decoder, config, device
+    global model, spect_parser, decoder, config, device, model2
     config = cfg
     logging.getLogger().setLevel(logging.DEBUG)
-
+    model1Path = '/work/Source/deepspeech.pytorch/models/deepspeech_50_1600_gru_fpt.pth'
     logging.info('Setting up server...')
     device = torch.device("cuda" if cfg.model.cuda else "cpu")
-
     model = load_model(device=device,
-                       model_path=cfg.model.model_path,
+                       model_path=model1Path,
                        use_half=cfg.model.use_half)
-
+    model2Path = '/work/Source/deepspeech.pytorch/models/deepspeech_1600_lstm_16_50_vin.pth'
+    model2 = load_model(device=device,
+                       model_path=model2Path,
+                       use_half=cfg.model.use_half)
     decoder = load_decoder(labels=model.labels,
                            cfg=cfg.lm)
 
