@@ -26,6 +26,27 @@ mysqlService = False
 mysql = None
 conn = None
 app = Flask(__name__)
+
+import Levenshtein as Lev
+
+def wer(target, reference):
+    b = set(target.split() + reference.split())
+    word2char = dict(zip(b, range(len(b))))
+    w1 = [chr(word2char[w]) for w in target.split()]
+    w2 = [chr(word2char[w]) for w in reference.split()]
+    return Lev.distance(''.join(w1), ''.join(w2))
+
+def cer( target, reference):
+    target, reference, = target.replace(' ', ''), reference.replace(' ', '')
+    return Lev.distance(target, reference)
+
+def werPecentage(target, refenrence):
+    num=wer(target, refenrence)
+    return (float(num)/len(target.split()))*100
+
+def cerPecentage(target, refenrence):
+    num=cer(target, refenrence)
+    return (float(num)/len(target.replace(' ', '')))*100
 try:
     mysql = MySQL()
     app.config['MYSQL_DATABASE_USER'] = 'root'
@@ -174,14 +195,23 @@ def transcribe_file():
                     os.remove(temp_audio.name)
                 print("File name : "+str(path))
                 # strCovert = "ffmpeg -i "+"/transcribe_tmp/tmpbh97i2v0.webm" +" -c:a pcm_f32le "+/transcribe_tmp/ou2t.wav"
-                logging.info('Transcribing file...')
+                choose = 1
+                try:
+                    choose = int(request.form['model'])
+                except:
+                    pass
+
+                global model, model2
+                runingModel = model 
+                if (choose==2):
+                    runingModel = model2
                 transcription, _ = run_transcribe(audio_path=path,
                                                 spect_parser=spect_parser,
-                                                model=model,
+                                                model=runingModel,
                                                 decoder=decoder,
                                                 device=device,
                                                 use_half=True)
-                logging.info('File transcribed')
+                logging.info('')
                 res['status'] = 200
                 if (len(transcription) > 0):
                     res['data'] = transcription[0][0]
@@ -193,14 +223,27 @@ def transcribe_file():
                 transTxt = path.replace("wav", "txt")
                 with open(transTxt,"w") as textFile:
                     textFile.write(res['data'])
+                logging.info('Success transcript')
+                logging.debug(res)
                 #os.remove(dst2)
         except Exception as exx:
             res['status'] = 403
             res['data'] = str(exx)
         t1 = time.time()
         total = t1-t0
+        targetString = ""
+        wer = 0
+        cer = 0
+        try:
+            targetString = request.form['targetString']
+            wer = werPecentage(targetString, res['data'])
+            cer = cerPecentage(targetString, res['data'])
+        except:
+            wer = 100
+            er = 100
         res['seconds'] = total
-        print('success')
+        res['wer'] = wer
+        res['cer']= cer
         return res
 # 
 # Get transcribe FPT
@@ -339,27 +382,31 @@ def index(name):
 def main(cfg: ServerConfig):
     global model, spect_parser, decoder, config, device, model2
     config = cfg
-    logging.getLogger().setLevel(logging.DEBUG)
     model1Path = '/work/Source/deepspeech.pytorch/models/deepspeech_50_1600_gru_fpt.pth'
     logging.info('Setting up server...')
     device = torch.device("cuda" if cfg.model.cuda else "cpu")
     model = load_model(device=device,
                        model_path=model1Path,
                        use_half=cfg.model.use_half)
+    logging.info('Loaded model 1')
     model2Path = '/work/Source/deepspeech.pytorch/models/deepspeech_1600_lstm_16_50_vin.pth'
     model2 = load_model(device=device,
                        model_path=model2Path,
                        use_half=cfg.model.use_half)
+    logging.info('Loaded model 2 ')
     decoder = load_decoder(labels=model.labels,
                            cfg=cfg.lm)
-
     spect_parser = SpectrogramParser(audio_conf=model.audio_conf,
                                      normalize=True)
-
     spect_parser = SpectrogramParser(model.audio_conf, normalize=True)
     logging.info('Server initialised')
-    app.run(host=cfg.host, port=cfg.port, debug=True, use_reloader=False)
-
+    app.run(host=cfg.host, port=cfg.port, debug=False, use_reloader=False)
 
 if __name__ == "__main__":
     main()
+
+
+# a=werPecentage("Nguyễn Hoàng QUyên", "Nguyễ Hoàng Quyên")
+# print(a)
+# b=cerPecentage("Nguyễn Hoàng QUyên", "Nguyễ Hoàng Quyên")
+# print(b)
