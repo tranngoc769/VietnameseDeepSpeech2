@@ -56,7 +56,8 @@ try:
     mysql.init_app(app)
     conn = mysql.connect()
     mysqlService = True
-except:
+except Exception as rr:
+    print(rr)
     mysqlService = False
 def queryNonDataSql(sql):
     if mysqlService == False:
@@ -232,7 +233,7 @@ def transcribe_file():
         t1 = time.time()
         total = t1-t0
         targetString = ""
-        wer = 0
+        wer = 100
         cer = 0
         try:
             targetString = request.form['targetString']
@@ -242,8 +243,8 @@ def transcribe_file():
             wer = 100
             er = 100
         res['seconds'] = total
-        res['wer'] = wer
-        res['cer']= cer
+        res['wer'] = round(wer, 3)
+        res['cer']= round(cer, 3)
         return res
 # 
 # Get transcribe FPT
