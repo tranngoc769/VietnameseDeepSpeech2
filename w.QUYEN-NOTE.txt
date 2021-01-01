@@ -1,0 +1,1 @@
+scp -i "home\tranngoc\.ssh\id_rsa"  -P 7071 src des

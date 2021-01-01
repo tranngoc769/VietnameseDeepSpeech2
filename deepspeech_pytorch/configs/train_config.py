@@ -42,7 +42,7 @@ class AugmentationConfig:
 class DataConfig:
     train_manifest: str = "/work/dataset_vinpro/train_fpt_11.csv"
     #train_manifest: str = "/dataset/vi_train.csv"
-    val_manifest: str = '/dataset/vi_test.csv'
+    val_manifest: str = "/dataset/vi_test.csv"
     batch_size: int = 25  # Batch size for training
     num_workers: int = 0  # Number of workers used in data-loading
     labels_path: str = 'labels.json'  # Contains tokens for model output
@@ -52,7 +52,7 @@ class DataConfig:
 #cấu hình của model 
 @dataclass
 class BiDirectionalConfig:
-    rnn_type: RNNType = RNNType.lstm  # Type of RNN to use in model
+    c: RNNType = RNNType.lstm  # Type of RNN to use in model
     hidden_size: int = 1600  # Hidden size of RNN Layer
     hidden_layers: int = 5  # Number of RNN layers
 
