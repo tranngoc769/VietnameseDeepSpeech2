@@ -21,7 +21,7 @@ class LMConfig:
 class ModelConfig:
     use_half: bool = True  # Use half precision. This is recommended when using mixed-precision at training time
     cuda: bool = True
-    model_path: str = "/work/Source/deepspeech.pytorch/models/deepspeech_1600_lstm_16_50_vin.pth"
+    model_path: str = "/work/Source/deepspeech.pytorch/models/deepspeech_1600_vinfpt_25_50.pth"
 
 
 @dataclass
@@ -38,10 +38,10 @@ class TranscribeConfig(InferenceConfig):
 
 @dataclass
 class EvalConfig(InferenceConfig):
-    test_manifest: str ="/dataset/vi_test.csv"  # Path to validation manifest csv
+    test_manifest: str ="/dataset/vi_dev.csv"  # Path to validation manifest csv
     verbose: bool = True  # Print out decoded output and error of each sample
     save_output: str = "/dataset/lm_outtest/outtest"  # Saves output of model from test to this file_path
-    batch_size: int = 16  # Batch size for testing quyen 20->
+    batch_size: int = 25  # Batch size for testing quyen 20->
     num_workers: int = 0  #quyen 4->
 
 

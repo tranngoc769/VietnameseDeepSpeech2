@@ -14,6 +14,7 @@ deepspeech_pytorch/__pycache__/training.cpython-36.pyc
 deepspeech_pytorch/__pycache__/utils.cpython-36.pyc
 kubernetes/README.md
 outputs
+dataEnglish/**
 models/**
 models
 deepspeech_pytorch/quyenImg/

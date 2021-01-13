@@ -202,10 +202,14 @@ def transcribe_file():
                 except:
                     pass
 
-                global model, model2
+                global model, model2, model3
                 runingModel = model 
                 if (choose==2):
                     runingModel = model2
+                    print("Using model 2")
+                if (choose==3):
+                    runingModel = model3
+                    print("Using model 3")
                 transcription, _ = run_transcribe(audio_path=path,
                                                 spect_parser=spect_parser,
                                                 model=runingModel,
@@ -381,7 +385,7 @@ def index(name):
     return render_template('index.html')
 @hydra.main(config_name="config")
 def main(cfg: ServerConfig):
-    global model, spect_parser, decoder, config, device, model2
+    global model, spect_parser, decoder, config, device, model2, model3
     config = cfg
     model1Path = '/work/Source/deepspeech.pytorch/models/deepspeech_50_1600_gru_fpt.pth'
     logging.info('Setting up server...')
@@ -394,7 +398,13 @@ def main(cfg: ServerConfig):
     model2 = load_model(device=device,
                        model_path=model2Path,
                        use_half=cfg.model.use_half)
-    logging.info('Loaded model 2 ')
+
+    logging.info('Loaded model 2')
+    model3Path = '/work/Source/deepspeech.pytorch/models/deepspeech_1600_vinfpt_25_50.pth'
+    model3 = load_model(device=device,
+                       model_path=model3Path,
+                       use_half=cfg.model.use_half)
+    logging.info('Loaded model 3')
     decoder = load_decoder(labels=model.labels,
                            cfg=cfg.lm)
     spect_parser = SpectrogramParser(audio_conf=model.audio_conf,
