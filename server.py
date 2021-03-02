@@ -21,7 +21,7 @@ from convertWebmToMp3 import convertWebmToMp3
 import time
 import datetime
 import json
-
+from Punction import transcribe_comma
 mysqlService = False
 mysql = None
 conn = None
@@ -216,14 +216,16 @@ def transcribe_file():
                                                 decoder=decoder,
                                                 device=device,
                                                 use_half=True)
-                logging.info('')
                 res['status'] = 200
+                res_text = ""
                 if (len(transcription) > 0):
-                    res['data'] = transcription[0][0]
+                    res_text = transcription[0][0]
                     res['total'] = len(transcription[0])
                 else:
-                    res['data'] = transcription
+                    res_text = transcription
                     res['total'] = len(transcription)
+                
+                res['data'] = transcribe_comma.runTranscribe(commo_model,dict_data,  word_dict, char_dict, res_text)
                 res['path'] = path
                 transTxt = path.replace("wav", "txt")
                 with open(transTxt,"w") as textFile:
@@ -241,11 +243,11 @@ def transcribe_file():
         cer = 0
         try:
             targetString = request.form['targetString']
-            wer = werPecentage(targetString, res['data'])
-            cer = cerPecentage(targetString, res['data'])
+            wer = werPecentage(targetString, res_text)
+            cer = cerPecentage(targetString, res_text)
         except:
-            wer = 100
-            er = 100
+            wer = 0
+            er = 0
         res['seconds'] = total
         res['wer'] = round(wer, 3)
         res['cer']= round(cer, 3)
@@ -386,6 +388,8 @@ def index(name):
 @hydra.main(config_name="config")
 def main(cfg: ServerConfig):
     global model, spect_parser, decoder, config, device, model2, model3
+    global commo_model,dict_data,  word_dict, char_dict
+    commo_model,dict_data,  word_dict, char_dict = transcribe_comma.loadModel()
     config = cfg
     model1Path = '/work/Source/deepspeech.pytorch/models/deepspeech_50_1600_gru_fpt.pth'
     logging.info('Setting up server...')
@@ -415,9 +419,3 @@ def main(cfg: ServerConfig):
 
 if __name__ == "__main__":
     main()
-
-
-# a=werPecentage("Nguyễn Hoàng QUyên", "Nguyễ Hoàng Quyên")
-# print(a)
-# b=cerPecentage("Nguyễn Hoàng QUyên", "Nguyễ Hoàng Quyên")
-# print(b)

@@ -1,13 +1,14 @@
 import json
 from typing import List
-
+import sys
+sys.path.append(".")
 import torch
 from deepspeech_pytorch.configs.inference_config import TranscribeConfig
 from deepspeech_pytorch.decoder import Decoder
 from deepspeech_pytorch.loader.data_loader import SpectrogramParser
 from deepspeech_pytorch.model import DeepSpeech
 from deepspeech_pytorch.utils import load_decoder, load_model
-
+from Punction import transcribe_comma
 def getTranscript(filename):
     ok = ""
     with open(filename) as f:
@@ -43,9 +44,10 @@ def decode_results(decoded_output: List,
             results['output'].append(result)
     # print("\33[33m", decoded_output[0][0]  ,"\33[0m") 
     return results
-
+import time
 
 def transcribe(cfg: TranscribeConfig):
+    commo_model,dict_data,  word_dict, char_dict = transcribe_comma.loadModel()
     device = torch.device("cuda" if cfg.model.cuda else "cpu")
 
     model = load_model(device=device,
@@ -60,6 +62,8 @@ def transcribe(cfg: TranscribeConfig):
 
     #Đối với beamsearch decoded_putput cho ra mảng (1xbeam_width) với các phần tử là các câu có thể xảy ra:
     #VD: [["toi đi hộc", "tôi di hoc", "tôi đi ho",...]] 512 phần tử (beam_width=512)
+    
+    tim1 = time.time()
     decoded_output, decoded_offsets = run_transcribe(audio_path=cfg.audio_path,
                                                      spect_parser=spect_parser,
                                                      model=model,
@@ -70,7 +74,11 @@ def transcribe(cfg: TranscribeConfig):
                              decoded_offsets=decoded_offsets,
                              cfg=cfg)
     resp = json.dumps(results, ensure_ascii=False)
-    print("DEBUG : ", resp)
+    
+    tim2 = time.time()
+    print("Audio transcribe cost : "+ str(tim2 - tim1))
+    results['output'][0]['transcription'] = transcribe_comma.runTranscribe(commo_model,dict_data,  word_dict, char_dict,results['output'][0]['transcription'] )
+    #print("DEBUG : ", resp)
     return results['output'][0]['transcription'], results['_meta']
 
 

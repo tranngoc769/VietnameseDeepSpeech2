@@ -40,21 +40,21 @@ class AugmentationConfig:
 
 @dataclass
 class DataConfig:
-    train_manifest: str = "/work/dataset_vinpro/english_fpt_train.csv"
+    train_manifest: str = "/work/dataset_vinpro/vin_fpt/vinfpt_train.csv"
     #train_manifest: str = "/dataset/vi_train.csv"
-    val_manifest: str = "/work/dataset_vinpro/english_fpt_test.csv"
-    batch_size: int = 25  # Batch size for training
+    val_manifest: str = "/work/dataset_vinpro/vin_fpt/vinfpt_dev.csv"
+    batch_size: int = 32  # Batch size for training
     num_workers: int = 0  # Number of workers used in data-loading
-    labels_path: str = "/work/Source/deepspeech.pytorch/labelsenglish.json"  # Contains tokens for model output
+    labels_path: str = "labels.json"  # Contains tokens for model output
     spect: SpectConfig = SpectConfig()
     augmentation: AugmentationConfig = AugmentationConfig()
 
 #cấu hình của model 
 @dataclass
 class BiDirectionalConfig:
-    rnn_type: RNNType = RNNType.lstm  # Type of RNN to use in model
-    hidden_size: int = 1024  # Hidden size of RNN Layer
-    hidden_layers: int = 5  # Number of RNN layers
+    rnn_type: RNNType = RNNType.gru  # Type of RNN to use in model
+    hidden_size: int = 1600  # Hidden size of RNN Layer
+    hidden_layers: int = 7  # Number of RNN layers
 
 
 @dataclass
@@ -87,7 +87,7 @@ class CheckpointConfig:
     checkpoint: bool = True  # Enables epoch checkpoint saving of model
     checkpoint_per_iteration: int = 0  # Save checkpoint per N number of iterations. Default is disabled
     save_n_recent_models: int = 5  # Max number of checkpoints to save, delete older checkpoints
-    best_val_model_name: str = 'deepspeech_final_1024_fptenglish_16_50.pth'  # Name to save best validated model within the save folder
+    best_val_model_name: str = 'deepspeech_1600_vinfpt_32_50_gru_hidden5_split.pth'  # Name to save best validated model within the save folder
     load_auto_checkpoint: bool = True  # Automatically load the latest checkpoint from save folder
 
 
@@ -109,7 +109,7 @@ class VisualizationConfig:
     visdom: bool = False  # Turn on visdom graphing
     tensorboard: bool = False  # Turn on Tensorboard graphing
     log_dir: str = 'visualize/deepspeech_final'  # Location of Tensorboard log
-    log_params: bool = False  # Log parameter values and gradients
+    log_params: bool = True  # Log parameter values and gradients
 
 
 @dataclass

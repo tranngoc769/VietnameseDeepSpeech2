@@ -308,7 +308,7 @@ def train(cfg):
             #  print('Training Summary Epoch: [{0}]\t'
             #   'Time taken (s): {epoch_time:.0f}\t'
             #   'Average Loss {loss:.3f}\t'.format(epoch + 1, epoch_time=epoch_time, loss=state.avg_loss))
-            note = "Đổi tham số train_config: type: rnn.lstm epochs: int = 50, batch_size: int = 25, hidden_size: int = 1600, hidden_layers: int = 5, file train_manifest:(11G) train_vinpro_fpt.csv"
+            note = "Đổi tham số train_config: type: rnn.gru epochs: int = 50, batch_size: int = 32, hidden_size: int = 1600, hidden_layers: int = 5, file train_manifest: vinfpt_train.csv, vinfpt_dev.csv", 
             sendReport(epoch+1,'{:.3f}'.format(epoch_time),'{:.3f}'.format(state.avg_loss), '{:.3f}'.format(wer),'{:.3f}'.format(cer),"{:.6f}".format(g['lr']), note)
         except Exception as esss:
             print('Error :', esss)
